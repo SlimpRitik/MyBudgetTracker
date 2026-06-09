@@ -9,206 +9,173 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Budget">
 <title>Budget Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- ── IMPORTANT: Replace with YOUR Firebase config (see setup guide below) ── -->
-<script>
-  const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBil0DFMbk4I3wA0DIKcdPpnJWT0wLTMY0",
-  authDomain: "budget-tracker-b94a6.firebaseapp.com",
-  projectId: "budget-tracker-b94a6",
-  storageBucket: "budget-tracker-b94a6.firebasestorage.app",
-  messagingSenderId: "320157130904",
-  appId: "1:320157130904:web:36b6f6ace617f35107f0ed",
-  measurementId: "G-0J7PWVFFKC"
-  };
-</script>
-
 <style>
-:root {
-  --bg:      #0F1B2D;
-  --card:    #1C2B3A;
-  --card2:   #243447;
-  --indigo:  #3D5AFE;
-  --indigo2: #536DFE;
-  --green:   #00C896;
-  --green-bg:#00C89620;
-  --red:     #FF4F5E;
-  --red-bg:  #FF4F5E20;
-  --amber:   #FFB300;
-  --amber-bg:#FFB30020;
-  --slate:   #8892A4;
-  --text:    #E8EDF5;
-  --sub:     #B0BAC8;
-  --border:  #2A3D52;
-  --radius:  16px;
-  --nav-h:   66px;
+:root{
+  --bg:#0F1B2D;--card:#1C2B3A;--card2:#243447;
+  --indigo:#3D5AFE;--indigo2:#536DFE;
+  --green:#00C896;--green-bg:#00C89620;
+  --red:#FF4F5E;--red-bg:#FF4F5E20;
+  --amber:#FFB300;--amber-bg:#FFB30020;
+  --slate:#8892A4;--text:#E8EDF5;--sub:#B0BAC8;
+  --border:#2A3D52;--radius:16px;--nav-h:66px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;max-width:480px;margin:0 auto;overflow-x:hidden}
 
-/* ── Login ── */
-#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;gap:24px;text-align:center}
+/* Login */
+#login-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:32px 24px;gap:20px;text-align:center}
 #login-screen .logo{font-size:64px}
 #login-screen h1{font-size:28px;font-weight:800;letter-spacing:-1px}
-#login-screen p{color:var(--slate);font-size:15px;line-height:1.5;max-width:300px}
-.google-btn{display:flex;align-items:center;gap:12px;background:#fff;color:#1a1a1a;border:none;border-radius:12px;padding:14px 24px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;width:100%;max-width:300px;justify-content:center;transition:opacity .15s}
-.google-btn:active{opacity:.85}
-.google-btn svg{width:20px;height:20px;flex-shrink:0}
-.sync-badge{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid var(--green);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--green);font-weight:600}
+#login-screen p{color:var(--slate);font-size:14px;line-height:1.5;max-width:300px}
+.token-input{background:var(--card);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:14px 16px;outline:none;width:100%;max-width:340px;transition:border-color .15s}
+.token-input:focus{border-color:var(--indigo)}
+.token-input::placeholder{color:var(--slate)}
+.connect-btn{background:var(--indigo);color:#fff;border:none;border-radius:12px;padding:15px 24px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;width:100%;max-width:340px;transition:opacity .15s}
+.connect-btn:active{opacity:.85}
+.connect-btn:disabled{opacity:.4;cursor:not-allowed}
+.info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;max-width:340px;text-align:left;font-size:13px;color:var(--sub);line-height:1.7}
+.info-box b{color:var(--text)}
+.info-box a{color:var(--indigo2)}
+.step{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
+.step-num{background:var(--indigo);color:#fff;width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+#err-box{background:#1C2B3A;border:1.5px solid var(--red);border-radius:12px;padding:12px 16px;max-width:340px;font-size:13px;color:var(--red);display:none;word-break:break-word}
 
-/* ── App ── */
+/* App */
 #app{display:none}
 .screen{display:none;flex-direction:column;min-height:100dvh;padding-bottom:var(--nav-h)}
 .screen.active{display:flex}
 
-/* ── Header ── */
+/* Header */
 .header{padding:52px 20px 16px;background:linear-gradient(180deg,#162236 0%,var(--bg) 100%);position:sticky;top:0;z-index:10}
-.header-row{display:flex;align-items:center;justify-content:space-between}
-.header h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.header h1{font-size:20px;font-weight:800;letter-spacing:-.5px;white-space:nowrap}
 .header .sub{font-size:13px;color:var(--slate);margin-top:2px}
-.user-avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);object-fit:cover;cursor:pointer}
-.user-initials{width:34px;height:34px;border-radius:50%;background:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
 
-/* ── Month Nav ── */
-.month-nav{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:12px;padding:6px 10px}
-.month-nav span{font-size:14px;font-weight:600;min-width:110px;text-align:center}
-.icon-btn{background:none;border:none;color:var(--sub);cursor:pointer;padding:4px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s}
+/* Month Nav */
+.month-nav{display:flex;align-items:center;gap:4px;background:var(--card);border-radius:12px;padding:4px 8px}
+.month-nav span{font-size:13px;font-weight:600;min-width:100px;text-align:center}
+.icon-btn{background:none;border:none;color:var(--sub);cursor:pointer;padding:4px;border-radius:8px;display:flex;align-items:center;justify-content:center}
 .icon-btn:active{background:var(--card2);color:var(--text)}
 .icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* ── Scroll body ── */
+/* Sync */
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px;vertical-align:middle}
+.sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}
+.sync-dot.err{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Scroll body */
 .scroll-body{flex:1;overflow-y:auto;padding:16px 20px 8px;display:flex;flex-direction:column;gap:14px}
 
-/* ── Balance Card ── */
-.balance-card{background:linear-gradient(135deg,#1E3A5F 0%,#162A45 100%);border:1px solid #2A4A6A;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+/* Balance card */
+.balance-card{background:linear-gradient(135deg,#1E3A5F,#162A45);border:1px solid #2A4A6A;border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
 .balance-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#3D5AFE18,transparent 70%)}
 .balance-label{font-size:12px;font-weight:600;color:var(--slate);letter-spacing:.8px;text-transform:uppercase}
-.balance-amount{font-size:36px;font-weight:800;letter-spacing:-1.5px;margin:6px 0 16px;color:var(--text)}
-.balance-amount.positive{color:var(--green)}
-.balance-amount.negative{color:var(--red)}
+.balance-amount{font-size:34px;font-weight:800;letter-spacing:-1.5px;margin:6px 0 16px}
+.balance-amount.pos{color:var(--green)}.balance-amount.neg{color:var(--red)}
 .flow-bar-wrap{display:flex;gap:4px;height:6px;border-radius:4px;overflow:hidden;background:var(--border)}
-.flow-bar-income{background:var(--green);border-radius:4px 0 0 4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.flow-bar-expense{background:var(--red);border-radius:0 4px 4px 0;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.flow-bar-i{background:var(--green);border-radius:4px 0 0 4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.flow-bar-e{background:var(--red);border-radius:0 4px 4px 0;transition:width .6s cubic-bezier(.4,0,.2,1)}
 .flow-labels{display:flex;justify-content:space-between;margin-top:8px}
 .flow-labels span{font-size:11px;color:var(--slate)}
 
-/* ── Tiles ── */
+/* Tiles */
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tiles-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .tile{background:var(--card);border-radius:var(--radius);padding:16px}
 .tile-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
 .tile-amount{font-size:18px;font-weight:800;letter-spacing:-.5px}
-.tile-amount.green{color:var(--green)}
-.tile-amount.red{color:var(--red)}
-.tile-amount.amber{color:var(--amber)}
+.tile-amount.green{color:var(--green)}.tile-amount.red{color:var(--red)}.tile-amount.amber{color:var(--amber)}
 .tile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px}
-.tile-icon.g{background:var(--green-bg)}
-.tile-icon.r{background:var(--red-bg)}
-.tile-icon.a{background:var(--amber-bg)}
+.tile-icon.g{background:var(--green-bg)}.tile-icon.r{background:var(--red-bg)}.tile-icon.a{background:var(--amber-bg)}
 
-/* ── Section ── */
+/* Section */
 .section-head{display:flex;align-items:center;justify-content:space-between}
 .section-head h2{font-size:15px;font-weight:700}
 .section-head button{background:none;border:none;color:var(--indigo2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 
-/* ── Tx List ── */
+/* Tx list */
 .tx-list{display:flex;flex-direction:column;gap:8px}
 .tx-item{background:var(--card);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;animation:slideIn .2s ease}
-@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .tx-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.tx-icon.income-icon{background:var(--green-bg)}
-.tx-icon.expense-icon{background:var(--red-bg)}
-.tx-icon.liability-icon{background:var(--amber-bg)}
+.tx-icon.ii{background:var(--green-bg)}.tx-icon.ei{background:var(--red-bg)}.tx-icon.li{background:var(--amber-bg)}
 .tx-info{flex:1;min-width:0}
 .tx-cat{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tx-note{font-size:12px;color:var(--slate);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tx-right{text-align:right;flex-shrink:0}
 .tx-amount{font-size:15px;font-weight:700}
-.tx-amount.green{color:var(--green)}
-.tx-amount.red{color:var(--red)}
-.tx-amount.amber{color:var(--amber)}
+.tx-amount.green{color:var(--green)}.tx-amount.red{color:var(--red)}.tx-amount.amber{color:var(--amber)}
 .tx-date{font-size:11px;color:var(--slate);margin-top:2px}
 .empty-state{text-align:center;padding:32px 0;color:var(--slate)}
 .empty-state .emoji{font-size:36px;display:block;margin-bottom:8px}
-.empty-state p{font-size:14px}
 
-/* ── Liability Card ── */
-.liability-item{background:var(--card);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.lib-top{display:flex;align-items:center;gap:12px}
-.lib-info{flex:1;min-width:0}
-.lib-name{font-size:15px;font-weight:700}
-.lib-meta{font-size:12px;color:var(--slate);margin-top:2px}
-.lib-amount{text-align:right;flex-shrink:0}
-.lib-total{font-size:15px;font-weight:700;color:var(--amber)}
-.lib-remaining{font-size:11px;color:var(--slate);margin-top:2px}
-.progress-wrap{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
-.progress-bar{height:100%;background:var(--amber);border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.lib-actions{display:flex;gap:8px}
-.pay-btn{flex:1;background:var(--amber-bg);border:1px solid var(--amber);color:var(--amber);border-radius:8px;padding:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
-.pay-btn:active{background:var(--amber)}
-.del-btn-sm{background:var(--red-bg);border:1px solid transparent;color:var(--red);border-radius:8px;padding:8px 12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
-
-/* ── Bottom Nav ── */
+/* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);background:#162236;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);z-index:100}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:8px 12px;color:var(--slate);transition:color .15s;font-family:inherit}
 .nav-item.active{color:var(--indigo2)}
 .nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav-item span{font-size:10px;font-weight:600;letter-spacing:.3px}
 
-/* ── FAB ── */
-.fab{position:fixed;bottom:calc(var(--nav-h) + 16px);right:20px;width:52px;height:52px;border-radius:50%;background:var(--indigo);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px #3D5AFE55;transition:transform .15s,box-shadow .15s;z-index:50}
-.fab:active{transform:scale(0.93);box-shadow:0 2px 8px #3D5AFE44}
+/* FAB */
+.fab{position:fixed;bottom:calc(var(--nav-h)+16px);right:20px;width:52px;height:52px;border-radius:50%;background:var(--indigo);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px #3D5AFE55;z-index:50;transition:transform .15s}
+.fab:active{transform:scale(.93)}
 .fab svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}
 
-/* ── Add Screen ── */
+/* Add screen */
 .add-header{padding:52px 20px 16px;background:linear-gradient(180deg,#162236 0%,var(--bg) 100%)}
 .add-header h1{font-size:22px;font-weight:800}
 .type-toggle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;background:var(--card);border-radius:12px;padding:6px}
 .type-btn{padding:10px;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--slate);transition:all .2s}
-.type-btn.active-expense{background:var(--red);color:#fff}
-.type-btn.active-income{background:var(--green);color:#fff}
-.type-btn.active-liability{background:var(--amber);color:#1a1a1a}
+.type-btn.ae{background:var(--red);color:#fff}
+.type-btn.ai{background:var(--green);color:#fff}
+.type-btn.al{background:var(--amber);color:#1a1a1a}
 .form-group{display:flex;flex-direction:column;gap:6px}
 .form-label{font-size:12px;font-weight:600;color:var(--slate);letter-spacing:.5px;text-transform:uppercase}
 .form-input{background:var(--card);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:16px;padding:14px 16px;outline:none;transition:border-color .15s;width:100%;-webkit-appearance:none}
 .form-input:focus{border-color:var(--indigo)}
 .form-input::placeholder{color:var(--slate)}
-.form-input.amount-input{font-size:28px;font-weight:800;letter-spacing:-1px}
+.form-input.big{font-size:28px;font-weight:800;letter-spacing:-1px}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.cat-chip{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;color:var(--sub);transition:all .15s;user-select:none;line-height:1.4}
-.cat-chip:active{transform:scale(0.96)}
-.cat-chip.selected-expense{border-color:var(--red);background:var(--red-bg);color:var(--text)}
-.cat-chip.selected-income{border-color:var(--green);background:var(--green-bg);color:var(--text)}
-.cat-chip.selected-liability{border-color:var(--amber);background:var(--amber-bg);color:var(--text)}
-.cat-chip .cat-emoji{font-size:18px;display:block;margin-bottom:2px}
-.save-btn{background:var(--indigo);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:opacity .15s,transform .15s;letter-spacing:.2px}
-.save-btn:active{opacity:.85;transform:scale(0.98)}
+.cat-chip{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;color:var(--sub);transition:all .15s;line-height:1.4;user-select:none}
+.cat-chip:active{transform:scale(.96)}
+.cat-chip .ce{font-size:18px;display:block;margin-bottom:2px}
+.cat-chip.se{border-color:var(--red);background:var(--red-bg);color:var(--text)}
+.cat-chip.si{border-color:var(--green);background:var(--green-bg);color:var(--text)}
+.cat-chip.sl{border-color:var(--amber);background:var(--amber-bg);color:var(--text)}
+.save-btn{background:var(--indigo);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:opacity .15s}
+.save-btn:active{opacity:.85}
 .save-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* ── Filter tabs ── */
-.filter-tabs{display:flex;gap:8px;flex-wrap:wrap}
+/* History */
+.filter-tabs{display:flex;gap:8px}
 .filter-tab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--slate);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .filter-tab.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
-
-/* ── Delete btn ── */
-.del-btn{background:none;border:none;cursor:pointer;padding:6px;color:var(--slate);border-radius:8px;transition:color .15s,background .15s;flex-shrink:0}
+.del-btn{background:none;border:none;cursor:pointer;padding:6px;color:var(--slate);border-radius:8px;flex-shrink:0}
 .del-btn:active{color:var(--red);background:var(--red-bg)}
 .del-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-/* ── Sync indicator ── */
-.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px}
-.sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}
-.sync-dot.offline{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* Liabilities */
+.lib-item{background:var(--card);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.lib-top{display:flex;align-items:center;gap:12px}
+.lib-info{flex:1;min-width:0}
+.lib-name{font-size:15px;font-weight:700}
+.lib-meta{font-size:12px;color:var(--slate);margin-top:2px}
+.lib-right{text-align:right;flex-shrink:0}
+.lib-total{font-size:15px;font-weight:700;color:var(--amber)}
+.lib-rem{font-size:11px;color:var(--slate);margin-top:2px}
+.prog-wrap{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-bar{height:100%;background:var(--amber);border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.lib-actions{display:flex;gap:8px}
+.pay-btn{flex:1;background:var(--amber-bg);border:1px solid var(--amber);color:var(--amber);border-radius:8px;padding:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.del-btn-sm{background:var(--red-bg);border:none;color:var(--red);border-radius:8px;padding:8px 12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
 
-/* ── Toast ── */
+/* Toast */
 .toast{position:fixed;bottom:calc(var(--nav-h)+12px);left:50%;transform:translateX(-50%) translateY(20px);background:#243447;color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;white-space:nowrap;z-index:200;pointer-events:none;border:1px solid var(--border)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── Modal ── */
-.modal-overlay{position:fixed;inset:0;background:#0008;z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:#0009;z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;transform:translateY(40px);transition:transform .25s;display:flex;flex-direction:column;gap:14px}
 .modal-overlay.open .modal{transform:translateY(0)}
@@ -217,10 +184,10 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .modal-btns{display:flex;gap:10px}
 .modal-btns button{flex:1;padding:14px;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .btn-cancel{background:var(--card2);color:var(--text)}
-.btn-delete{background:var(--red);color:#fff}
-.btn-confirm{background:var(--amber);color:#1a1a1a}
+.btn-del{background:var(--red);color:#fff}
+.btn-pay{background:var(--amber);color:#1a1a1a}
 
-/* ── Loading ── */
+/* Loading */
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:500}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--indigo);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -234,40 +201,43 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
   <p style="color:var(--slate);font-size:14px">Loading…</p>
 </div>
 
-<!-- Login -->
-<div id="login-screen" style="display:none">
+<!-- Login / Setup -->
+<div id="login-screen">
   <div class="logo">💰</div>
   <h1>Budget Tracker</h1>
-  <p>Track income, expenses, and liabilities. Your data syncs across all your devices.</p>
-  <div class="sync-badge">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-    Syncs across all devices
+  <p>Paste your GitHub token below to sync data across all your devices for free.</p>
+
+  <div class="info-box">
+    <div class="step"><div class="step-num">1</div><div>Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></div></div>
+    <div class="step"><div class="step-num">2</div><div>Note: <b>Budget Tracker</b> · Expiration: <b>No expiration</b></div></div>
+    <div class="step"><div class="step-num">3</div><div>Tick only <b>gist</b> scope → click <b>Generate token</b></div></div>
+    <div class="step"><div class="step-num">4</div><div>Copy and paste the token below</div></div>
   </div>
-  <button class="google-btn" onclick="signInWithGoogle()">
-    <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 19.001 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
-    Sign in with Google
-  </button>
-  <p style="font-size:12px;color:var(--slate)">Free · No subscription · Data is yours</p>
+
+  <input id="token-input" class="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+  <button class="connect-btn" onclick="connectToken()">Connect & Start →</button>
+  <div id="err-box"></div>
+  <p style="font-size:11px;color:var(--slate)">Token is stored only on this device. Your data lives in a private GitHub Gist.</p>
 </div>
 
 <!-- App -->
 <div id="app">
 
-  <!-- ── HOME ── -->
+  <!-- HOME -->
   <div id="screen-home" class="screen active">
     <div class="header">
       <div class="header-row">
         <div>
-          <h1>Budget Tracker <span class="sync-dot" id="sync-dot"></span></h1>
-          <div class="sub" id="home-greeting">Good morning</div>
+          <h1>Budget <span class="sync-dot" id="sync-dot"></span></h1>
+          <div class="sub" id="home-greeting"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px">
           <div class="month-nav">
-            <button class="icon-btn" onclick="changeMonth(-1,'home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="icon-btn" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
             <span id="home-month-label"></span>
-            <button class="icon-btn" onclick="changeMonth(1,'home')"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="icon-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
-          <div id="user-badge" class="user-initials" onclick="signOut()">?</div>
+          <button onclick="logout()" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:18px;padding:4px" title="Sign out">⏻</button>
         </div>
       </div>
     </div>
@@ -276,24 +246,21 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
         <div class="balance-label">Net Balance</div>
         <div class="balance-amount" id="home-balance">KES 0</div>
         <div class="flow-bar-wrap">
-          <div class="flow-bar-income" id="flow-income" style="width:50%"></div>
-          <div class="flow-bar-expense" id="flow-expense" style="width:50%"></div>
+          <div class="flow-bar-i" id="flow-i" style="width:50%"></div>
+          <div class="flow-bar-e" id="flow-e" style="width:50%"></div>
         </div>
         <div class="flow-labels"><span>💚 Income</span><span>Expense ❤️</span></div>
       </div>
-
       <div class="tiles">
         <div class="tile"><div class="tile-icon g">💰</div><div class="tile-label">Income</div><div class="tile-amount green" id="home-income">KES 0</div></div>
         <div class="tile"><div class="tile-icon r">💸</div><div class="tile-label">Expenses</div><div class="tile-amount red" id="home-expense">KES 0</div></div>
       </div>
-
       <div class="tile" style="background:linear-gradient(135deg,#1a2800,#1C2B3A)">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div class="tile-label">Total Liabilities</div><div class="tile-amount amber" id="home-liabilities">KES 0</div></div>
-          <div style="font-size:32px">⚖️</div>
+          <div><div class="tile-label">Total Liabilities</div><div class="tile-amount amber" id="home-libs">KES 0</div></div>
+          <span style="font-size:32px">⚖️</span>
         </div>
       </div>
-
       <div class="section-head">
         <h2>Recent Transactions</h2>
         <button onclick="showScreen('history')">See all</button>
@@ -305,22 +272,19 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     </button>
   </div>
 
-  <!-- ── ADD ── -->
+  <!-- ADD -->
   <div id="screen-add" class="screen">
     <div class="add-header"><h1>Add Record</h1></div>
     <div class="scroll-body" style="gap:18px">
       <div class="type-toggle">
-        <button class="type-btn active-expense" id="btn-expense" onclick="setType('expense')">Expense</button>
-        <button class="type-btn" id="btn-income" onclick="setType('income')">Income</button>
-        <button class="type-btn" id="btn-liability" onclick="setType('liability')">Liability</button>
+        <button class="type-btn ae" id="btn-e" onclick="setType('expense')">Expense</button>
+        <button class="type-btn" id="btn-i" onclick="setType('income')">Income</button>
+        <button class="type-btn" id="btn-l" onclick="setType('liability')">Liability</button>
       </div>
-
       <div class="form-group">
-        <label class="form-label" id="amount-label">Amount (KES)</label>
-        <input id="add-amount" class="form-input amount-input" type="number" inputmode="decimal" placeholder="0.00" min="0" step="any">
+        <label class="form-label" id="amount-lbl">Amount (KES)</label>
+        <input id="add-amount" class="form-input big" type="number" inputmode="decimal" placeholder="0.00" min="0" step="any">
       </div>
-
-      <!-- Liability-only fields -->
       <div id="lib-fields" style="display:none;flex-direction:column;gap:18px">
         <div class="form-group">
           <label class="form-label">Lender / Description</label>
@@ -335,35 +299,31 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
           <input id="lib-due" class="form-input" type="date">
         </div>
       </div>
-
       <div class="form-group" id="cat-section">
         <label class="form-label">Category</label>
         <div class="cat-grid" id="cat-grid"></div>
       </div>
-
       <div class="form-group">
         <label class="form-label">Date</label>
         <input id="add-date" class="form-input" type="date">
       </div>
-
       <div class="form-group">
         <label class="form-label">Note (optional)</label>
         <input id="add-note" class="form-input" type="text" placeholder="What was this for?">
       </div>
-
-      <button class="save-btn" id="save-btn" onclick="saveRecord()">Save</button>
+      <button class="save-btn" id="save-btn" onclick="saveRecord()">Save Transaction</button>
     </div>
   </div>
 
-  <!-- ── HISTORY ── -->
+  <!-- HISTORY -->
   <div id="screen-history" class="screen">
     <div class="header">
       <div class="header-row">
         <h1>History</h1>
         <div class="month-nav">
-          <button class="icon-btn" onclick="changeMonth(-1,'history')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="icon-btn" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
           <span id="hist-month-label"></span>
-          <button class="icon-btn" onclick="changeMonth(1,'history')"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <button class="icon-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
         </div>
       </div>
       <div style="margin-top:12px">
@@ -374,32 +334,27 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
         </div>
       </div>
     </div>
-    <div class="scroll-body">
-      <div class="tx-list" id="hist-list"></div>
-    </div>
+    <div class="scroll-body"><div class="tx-list" id="hist-list"></div></div>
   </div>
 
-  <!-- ── LIABILITIES ── -->
+  <!-- LIABILITIES -->
   <div id="screen-liabilities" class="screen">
     <div class="header">
       <div class="header-row">
-        <div>
-          <h1>Liabilities</h1>
-          <div class="sub">Loans, debts &amp; credit</div>
-        </div>
+        <div><h1>Liabilities</h1><div class="sub">Loans, debts &amp; credit</div></div>
       </div>
     </div>
     <div class="scroll-body">
       <div class="tile" style="background:linear-gradient(135deg,#261800,#1C2B3A)">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div class="tile-label">Total Outstanding</div><div class="tile-amount amber" id="lib-total-outstanding">KES 0</div></div>
-          <div style="font-size:32px">⚖️</div>
+          <div><div class="tile-label">Total Outstanding</div><div class="tile-amount amber" id="lib-total">KES 0</div></div>
+          <span style="font-size:32px">⚖️</span>
         </div>
-        <div style="margin-top:12px;font-size:12px;color:var(--slate)" id="lib-count">0 active liabilities</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--slate)" id="lib-count">0 liabilities</div>
       </div>
-      <div id="lib-list" class="tx-list"></div>
+      <div class="tx-list" id="lib-list"></div>
     </div>
-    <button class="fab" onclick="setTypeAndGoAdd('liability')">
+    <button class="fab" onclick="setType('liability');showScreen('add')">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
   </div>
@@ -425,7 +380,6 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
   </nav>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <!-- Delete Modal -->
@@ -435,7 +389,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <p>This will be permanently removed from all devices.</p>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('del-modal')">Cancel</button>
-      <button class="btn-delete" onclick="confirmDelete()">Delete</button>
+      <button class="btn-del" onclick="confirmDelete()">Delete</button>
     </div>
   </div>
 </div>
@@ -448,472 +402,454 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <input id="pay-amount" class="form-input" type="number" inputmode="decimal" placeholder="Amount (KES)" min="0" step="any">
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('pay-modal')">Cancel</button>
-      <button class="btn-confirm" onclick="confirmPayment()">Pay</button>
+      <button class="btn-pay" onclick="confirmPayment()">Save Payment</button>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script type="module">
-
-// ── Guard: show helpful message if config not yet filled in ───────────────
-const isConfigured = FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith('YOUR');
-if (!isConfigured) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  // Swap the sign-in button for a setup notice
-  document.querySelector('.google-btn').outerHTML = `
-    <div style="background:#1C2B3A;border:1.5px solid #FFB300;border-radius:12px;padding:16px 20px;max-width:320px;text-align:left">
-      <div style="font-size:15px;font-weight:700;color:#FFB300;margin-bottom:8px">⚠️ Firebase not configured</div>
-      <div style="font-size:13px;color:#B0BAC8;line-height:1.6">
-        Open <b style="color:#E8EDF5">BudgetTracker_v2.html</b> in a text editor and replace the
-        <b style="color:#E8EDF5">FIREBASE_CONFIG</b> values at the top with your project's keys.<br><br>
-        See the setup guide that came with this file.
-      </div>
-    </div>`;
-  // Stub out Firebase functions so nothing else crashes
-  window.signInWithGoogle = () => {};
-  window.signOut = () => {};
-  window._saveRecord = async () => {};
-  window._deleteRecord = async () => {};
-  window._updateLib = async () => {};
-  throw new Error('Firebase not configured — stopping module execution.');
-}
-
-import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged }
-                                                from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query, where, updateDoc }
-                                                from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ── Init ──────────────────────────────────────────────────────────────────
-const app  = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-let unsubTx  = null;
-let unsubLib = null;
-let currentUser = null;
-
-window.DB_TX  = [];
-window.DB_LIB = [];
-
-// ── Error display helper ──────────────────────────────────────────────────
-function showAuthError(msg) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  let errBox = document.getElementById('auth-error-box');
-  if (!errBox) {
-    errBox = document.createElement('div');
-    errBox.id = 'auth-error-box';
-    errBox.style.cssText = 'background:#1C2B3A;border:1.5px solid #FF4F5E;border-radius:12px;padding:14px 16px;max-width:320px;font-size:13px;color:#FF4F5E;line-height:1.5;word-break:break-all;text-align:left';
-    document.getElementById('login-screen').appendChild(errBox);
-  }
-  errBox.innerHTML = '<b>❌ Error:</b><br>' + msg;
-}
-
-// ── Auth ──────────────────────────────────────────────────────────────────
-window.signInWithGoogle = async () => {
-  const btn = document.querySelector('.google-btn');
-  try {
-    if (btn) { btn.innerHTML = '<span style="opacity:.6">Signing in…</span>'; btn.disabled = true; }
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await signInWithPopup(auth, provider);
-  } catch(e) {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 19.001 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg> Sign in with Google`;
-    }
-    // Ignore user-cancelled popup
-    if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
-    showAuthError((e.code || '') + '<br>' + (e.message || String(e)));
-  }
-};
-
-window.signOut = async () => {
-  if (!confirm('Sign out?')) return;
-  if (unsubTx)  unsubTx();
-  if (unsubLib) unsubLib();
-  await fbSignOut(auth);
-};
-
-onAuthStateChanged(auth, user => {
-  document.getElementById('loading').style.display = 'none';
-  if (user) {
-    currentUser = user;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    const initials = user.displayName ? user.displayName.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase() : '?';
-    document.getElementById('user-badge').textContent = initials;
-    subscribeData(user.uid);
-    renderHome();
-  } else {
-    currentUser = null;
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-  }
-}, e => {
-  showAuthError('Auth state error:<br>' + (e.code || '') + '<br>' + (e.message || String(e)));
-});
-
-// ── Realtime sync ─────────────────────────────────────────────────────────
-function subscribeData(uid) {
-  setSyncDot('syncing');
-  if (unsubTx)  unsubTx();
-  if (unsubLib) unsubLib();
-
-  unsubTx = onSnapshot(
-    query(collection(db,'transactions'), where('uid','==',uid)),
-    snap => {
-      window.DB_TX = snap.docs.map(d=>({id:d.id,...d.data()}));
-      setSyncDot('ok');
-      refreshCurrentScreen();
-    },
-    () => setSyncDot('offline')
-  );
-
-  unsubLib = onSnapshot(
-    query(collection(db,'liabilities'), where('uid','==',uid)),
-    snap => {
-      window.DB_LIB = snap.docs.map(d=>({id:d.id,...d.data()}));
-      refreshCurrentScreen();
-    }
-  );
-}
-
-// ── Save ──────────────────────────────────────────────────────────────────
-window._saveRecord = async (type, data) => {
-  if (!currentUser) return;
-  setSyncDot('syncing');
-  const col = type === 'liability' ? 'liabilities' : 'transactions';
-  const ref = doc(collection(db, col));
-  await setDoc(ref, { uid: currentUser.uid, ...data });
-};
-
-window._deleteRecord = async (id, col) => {
-  await deleteDoc(doc(db, col, id));
-};
-
-window._updateLib = async (id, data) => {
-  await updateDoc(doc(db,'liabilities',id), data);
-};
-
-</script>
-
 <script>
-// ── Categories ────────────────────────────────────────────────────────────
-const EXPENSE_CATS = [
-  {e:"🏠",l:"Housing"},{e:"🍔",l:"Food"},{e:"🚗",l:"Transport"},
-  {e:"💊",l:"Health"},{e:"👕",l:"Clothing"},{e:"📱",l:"Utilities"},
-  {e:"🎬",l:"Fun"},{e:"📚",l:"Education"},{e:"🛒",l:"Shopping"},
-  {e:"💰",l:"Savings"},{e:"🔧",l:"Repairs"},{e:"📦",l:"Other"}
-];
-const INCOME_CATS = [
-  {e:"💼",l:"Salary"},{e:"🏦",l:"Freelance"},{e:"📈",l:"Investment"},
-  {e:"🏠",l:"Rental"},{e:"🎁",l:"Gift"},{e:"💳",l:"Refund"},
-  {e:"🛍️",l:"Business"},{e:"📦",l:"Other"}
-];
-const LIABILITY_CATS = [
-  {e:"🏦",l:"Bank Loan"},{e:"📱",l:"Fuliza/MPESA"},{e:"🤝",l:"Personal"},{e:"💳",l:"Credit Card"},
-  {e:"🏘️",l:"Mortgage"},{e:"🚗",l:"Hire Purchase"},{e:"📚",l:"HELB"},{e:"📦",l:"Other"}
-];
+// ── Categories ─────────────────────────────────────────────────────────────
+const CATS = {
+  expense:[
+    {e:'🏠',l:'Housing'},{e:'🍔',l:'Food'},{e:'🚗',l:'Transport'},
+    {e:'💊',l:'Health'},{e:'👕',l:'Clothing'},{e:'📱',l:'Utilities'},
+    {e:'🎬',l:'Fun'},{e:'📚',l:'Education'},{e:'🛒',l:'Shopping'},
+    {e:'💰',l:'Savings'},{e:'🔧',l:'Repairs'},{e:'📦',l:'Other'}
+  ],
+  income:[
+    {e:'💼',l:'Salary'},{e:'🏦',l:'Freelance'},{e:'📈',l:'Investment'},
+    {e:'🏠',l:'Rental'},{e:'🎁',l:'Gift'},{e:'💳',l:'Refund'},
+    {e:'🛍️',l:'Business'},{e:'📦',l:'Other'}
+  ],
+  liability:[
+    {e:'🏦',l:'Bank Loan'},{e:'📱',l:'Fuliza/MPESA'},{e:'🤝',l:'Personal'},
+    {e:'💳',l:'Credit Card'},{e:'🏘️',l:'Mortgage'},{e:'🚗',l:'Hire Purchase'},
+    {e:'📚',l:'HELB'},{e:'📦',l:'Other'}
+  ]
+};
 
-// ── State ─────────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────────
+let TOKEN   = '';
+let GIST_ID = '';
+let DB      = { txs: [], libs: [] };
 let currentMonth = new Date().toISOString().slice(0,7);
-let addType      = 'expense';
-let addCat       = '';
-let addEmoji     = '💳';
-let filterType   = 'all';
-let pendingDeleteId  = null;
-let pendingDeleteCol = 'transactions';
-let pendingPayId     = null;
+let addType = 'expense', addCat = '', addEmoji = '💳';
+let filterType = 'all';
+let pendingDelId = null, pendingDelType = null, pendingPayId = null;
+let saveTimer = null;
 
-// ── Screens ───────────────────────────────────────────────────────────────
+// ── GitHub Gist API ────────────────────────────────────────────────────────
+const GIST_FILE = 'budget_tracker_data.json';
+
+async function gistGet() {
+  const r = await fetch('https://api.github.com/gists/' + GIST_ID, {
+    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json' }
+  });
+  if (!r.ok) throw new Error('Fetch failed: ' + r.status);
+  const data = await r.json();
+  const content = data.files[GIST_FILE]?.content;
+  return content ? JSON.parse(content) : { txs: [], libs: [] };
+}
+
+async function gistPut(db) {
+  const r = await fetch('https://api.github.com/gists/' + GIST_ID, {
+    method: 'PATCH',
+    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(db) } } })
+  });
+  if (!r.ok) throw new Error('Save failed: ' + r.status);
+}
+
+async function gistCreate() {
+  const r = await fetch('https://api.github.com/gists', {
+    method: 'POST',
+    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description: 'Budget Tracker Data', public: false, files: { [GIST_FILE]: { content: JSON.stringify({ txs: [], libs: [] }) } } })
+  });
+  if (!r.ok) throw new Error('Create failed: ' + r.status);
+  const data = await r.json();
+  return data.id;
+}
+
+async function findOrCreateGist() {
+  const r = await fetch('https://api.github.com/gists', {
+    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json' }
+  });
+  if (!r.ok) throw new Error('Cannot list gists: ' + r.status);
+  const gists = await r.json();
+  const found = gists.find(g => g.files[GIST_FILE]);
+  return found ? found.id : await gistCreate();
+}
+
+// ── Token Connect ──────────────────────────────────────────────────────────
+async function connectToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) { showErr('Paste your GitHub token first.'); return; }
+
+  const btn = document.querySelector('.connect-btn');
+  btn.textContent = 'Connecting…'; btn.disabled = true;
+  hideErr();
+
+  try {
+    // Verify token works
+    const me = await fetch('https://api.github.com/user', {
+      headers: { Authorization: 'token ' + t }
+    });
+    if (!me.ok) throw new Error('Invalid token (status ' + me.status + '). Make sure you copied it correctly.');
+
+    TOKEN = t;
+    localStorage.setItem('bt_token', t);
+
+    setSyncDot('syncing');
+    GIST_ID = await findOrCreateGist();
+    localStorage.setItem('bt_gist', GIST_ID);
+
+    DB = await gistGet();
+    localStorage.setItem('bt_cache', JSON.stringify(DB));
+
+    launchApp();
+  } catch(e) {
+    showErr(e.message);
+    btn.textContent = 'Connect & Start →'; btn.disabled = false;
+  }
+}
+
+function logout() {
+  if (!confirm('Sign out? Token will be removed from this device.')) return;
+  localStorage.removeItem('bt_token');
+  localStorage.removeItem('bt_gist');
+  localStorage.removeItem('bt_cache');
+  location.reload();
+}
+
+// ── Launch ─────────────────────────────────────────────────────────────────
+function launchApp() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  setSyncDot('ok');
+  renderHome();
+  initAdd();
+}
+
+// ── Persist (debounced) ───────────────────────────────────────────────────
+function scheduleSave() {
+  localStorage.setItem('bt_cache', JSON.stringify(DB)); // instant local
+  setSyncDot('syncing');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await gistPut(DB);
+      setSyncDot('ok');
+    } catch(e) {
+      setSyncDot('err');
+      showToast('Sync failed — saved locally');
+    }
+  }, 1200);
+}
+
+// ── Screens ────────────────────────────────────────────────────────────────
 function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
-  // hide fab on liabilities screen when coming from nav (it has its own)
-  const homeFab = document.querySelector('#screen-home .fab');
-  if(name==='home')    renderHome();
-  if(name==='add')     initAdd();
-  if(name==='history') renderHistory();
-  if(name==='liabilities') renderLibs();
-  window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+  if (name === 'home')        renderHome();
+  if (name === 'add')         initAdd();
+  if (name === 'history')     renderHistory();
+  if (name === 'liabilities') renderLibs();
+  window.scrollTo(0, 0);
 }
 
-function refreshCurrentScreen() {
-  const active = document.querySelector('.screen.active');
-  if (!active) return;
-  const name = active.id.replace('screen-','');
-  if(name==='home')        renderHome();
-  if(name==='history')     renderHistory();
-  if(name==='liabilities') renderLibs();
-}
-
-function setTypeAndGoAdd(type) {
-  addType = type;
-  showScreen('add');
-}
-
-// ── Month ─────────────────────────────────────────────────────────────────
-function changeMonth(dir, screen) {
-  const [y,m] = currentMonth.split('-').map(Number);
-  const d = new Date(y, m-1+dir, 1);
-  currentMonth = d.toISOString().slice(0,7);
-  if(screen==='home')    renderHome();
-  if(screen==='history') renderHistory();
+// ── Month ──────────────────────────────────────────────────────────────────
+function changeMonth(dir) {
+  const [y, m] = currentMonth.split('-').map(Number);
+  const d = new Date(y, m - 1 + dir, 1);
+  currentMonth = d.toISOString().slice(0, 7);
+  const active = document.querySelector('.screen.active')?.id?.replace('screen-', '');
+  if (active === 'home')    renderHome();
+  if (active === 'history') renderHistory();
 }
 
 function monthLabel(ym) {
-  return new Date(ym+'-15').toLocaleDateString('en-KE',{month:'long',year:'numeric'});
+  return new Date(ym + '-15').toLocaleDateString('en-KE', { month: 'long', year: 'numeric' });
 }
 
-// ── Home ──────────────────────────────────────────────────────────────────
+// ── Home ───────────────────────────────────────────────────────────────────
 function renderHome() {
-  const lbl = document.getElementById('home-month-label');
-  if(lbl) lbl.textContent = monthLabel(currentMonth);
-
-  const txs     = (window.DB_TX||[]).filter(t=>t.date&&t.date.startsWith(currentMonth));
-  const income  = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  setText('home-month-label', monthLabel(currentMonth));
+  setText('hist-month-label', monthLabel(currentMonth));
+  const txs     = DB.txs.filter(t => t.date?.startsWith(currentMonth));
+  const income  = txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const expense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
   const balance = income - expense;
+  const libs    = DB.libs || [];
+  const totalLib = libs.reduce((s, l) => s + Math.max(0, l.amount - (l.paid || 0)), 0);
 
-  const totalLibs = (window.DB_LIB||[]).reduce((s,l)=>s+(l.amount - (l.paid||0)),0);
+  const bal = document.getElementById('home-balance');
+  bal.textContent = 'KES ' + fmt(Math.abs(balance));
+  bal.className   = 'balance-amount ' + (balance >= 0 ? 'pos' : 'neg');
 
-  const balEl = document.getElementById('home-balance');
-  if(balEl){balEl.textContent='KES '+fmt(Math.abs(balance));balEl.className='balance-amount '+(balance>=0?'positive':'negative');}
-  const ie = document.getElementById('home-income');   if(ie) ie.textContent='KES '+fmt(income);
-  const ee = document.getElementById('home-expense');  if(ee) ee.textContent='KES '+fmt(expense);
-  const le = document.getElementById('home-liabilities'); if(le) le.textContent='KES '+fmt(totalLibs);
+  setText('home-income', 'KES ' + fmt(income));
+  setText('home-expense', 'KES ' + fmt(expense));
+  setText('home-libs', 'KES ' + fmt(totalLib));
 
-  const total = income+expense||1;
-  const fi = document.getElementById('flow-income');   if(fi) fi.style.width=(income/total*100)+'%';
-  const fe = document.getElementById('flow-expense');  if(fe) fe.style.width=(expense/total*100)+'%';
+  const tot = income + expense || 1;
+  document.getElementById('flow-i').style.width = (income / tot * 100) + '%';
+  document.getElementById('flow-e').style.width = (expense / tot * 100) + '%';
 
   const hr = new Date().getHours();
-  const greet = document.getElementById('home-greeting');
-  if(greet) greet.textContent = hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  setText('home-greeting', hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening');
 
-  const recent = [...txs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const recent = [...txs].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const el = document.getElementById('home-recent');
-  if(!el) return;
-  el.innerHTML='';
-  if(!recent.length){el.innerHTML='<div class="empty-state"><span class="emoji">📭</span><p>No transactions this month</p></div>';return;}
-  recent.forEach(t=>el.appendChild(txCard(t,false)));
+  el.innerHTML = '';
+  if (!recent.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No transactions this month</p></div>'; return; }
+  recent.forEach(t => el.appendChild(txCard(t, false)));
 }
 
-// ── History ───────────────────────────────────────────────────────────────
+// ── History ────────────────────────────────────────────────────────────────
 function renderHistory() {
-  const lbl = document.getElementById('hist-month-label');
-  if(lbl) lbl.textContent = monthLabel(currentMonth);
-  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.toggle('active',b.dataset.f===filterType));
-  let txs = (window.DB_TX||[]).filter(t=>t.date&&t.date.startsWith(currentMonth));
-  if(filterType!=='all') txs=txs.filter(t=>t.type===filterType);
-  txs.sort((a,b)=>b.date.localeCompare(a.date));
+  setText('hist-month-label', monthLabel(currentMonth));
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.toggle('active', b.dataset.f === filterType));
+  let txs = DB.txs.filter(t => t.date?.startsWith(currentMonth));
+  if (filterType !== 'all') txs = txs.filter(t => t.type === filterType);
+  txs.sort((a, b) => b.date.localeCompare(a.date));
   const el = document.getElementById('hist-list');
-  if(!el) return;
-  el.innerHTML='';
-  if(!txs.length){el.innerHTML='<div class="empty-state"><span class="emoji">🔍</span><p>No records found</p></div>';return;}
-  txs.forEach(t=>el.appendChild(txCard(t,true)));
+  el.innerHTML = '';
+  if (!txs.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">🔍</span><p>No records found</p></div>'; return; }
+  txs.forEach(t => el.appendChild(txCard(t, true)));
 }
 
-function setFilter(f){ filterType=f; renderHistory(); }
+function setFilter(f) { filterType = f; renderHistory(); }
 
-// ── Liabilities ───────────────────────────────────────────────────────────
+// ── Liabilities ────────────────────────────────────────────────────────────
 function renderLibs() {
-  const libs = [...(window.DB_LIB||[])].sort((a,b)=>(a.dueDate||'').localeCompare(b.dueDate||''));
-  const outstanding = libs.reduce((s,l)=>s+(l.amount-(l.paid||0)),0);
-  const tot = document.getElementById('lib-total-outstanding');
-  if(tot) tot.textContent='KES '+fmt(outstanding);
-  const cnt = document.getElementById('lib-count');
-  if(cnt) cnt.textContent=libs.length+' active liabilit'+(libs.length===1?'y':'ies');
-
+  const libs = [...(DB.libs || [])].sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
+  const outstanding = libs.reduce((s, l) => s + Math.max(0, l.amount - (l.paid || 0)), 0);
+  setText('lib-total', 'KES ' + fmt(outstanding));
+  setText('lib-count', libs.length + ' active liabilit' + (libs.length === 1 ? 'y' : 'ies'));
   const el = document.getElementById('lib-list');
-  if(!el) return;
-  el.innerHTML='';
-  if(!libs.length){el.innerHTML='<div class="empty-state"><span class="emoji">🎉</span><p>No liabilities recorded</p></div>';return;}
-  libs.forEach(l=>{
-    const paid = l.paid||0;
-    const remaining = Math.max(0, l.amount-paid);
-    const pct = Math.min(100, paid/l.amount*100);
-    const overdue = l.dueDate && new Date(l.dueDate)<new Date() && remaining>0;
-    const div = document.createElement('div');
-    div.className='liability-item';
-    div.innerHTML=`
+  el.innerHTML = '';
+  if (!libs.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">🎉</span><p>No liabilities recorded</p></div>'; return; }
+  libs.forEach(l => {
+    const paid = l.paid || 0, rem = Math.max(0, l.amount - paid), pct = Math.min(100, paid / l.amount * 100);
+    const overdue = l.dueDate && new Date(l.dueDate) < new Date() && rem > 0;
+    const d = document.createElement('div');
+    d.className = 'lib-item';
+    d.innerHTML = `
       <div class="lib-top">
-        <div class="tx-icon liability-icon">${l.emoji||'⚖️'}</div>
+        <div class="tx-icon li">${l.emoji || '⚖️'}</div>
         <div class="lib-info">
-          <div class="lib-name">${l.name||l.category}</div>
-          <div class="lib-meta">${l.category}${l.dueDate?' · Due '+l.dueDate:''}${overdue?' <span style="color:var(--red)">OVERDUE</span>':''}</div>
+          <div class="lib-name">${l.name || l.category}</div>
+          <div class="lib-meta">${l.category}${l.dueDate ? ' · Due ' + l.dueDate : ''}${overdue ? ' <span style="color:var(--red)">OVERDUE</span>' : ''}</div>
         </div>
-        <div class="lib-amount">
-          <div class="lib-total">KES ${fmt(remaining)}</div>
-          <div class="lib-remaining">of ${fmt(l.amount)}</div>
+        <div class="lib-right">
+          <div class="lib-total">KES ${fmt(rem)}</div>
+          <div class="lib-rem">of ${fmt(l.amount)}</div>
         </div>
       </div>
-      <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--slate)">
         <span>Paid: KES ${fmt(paid)}</span><span>${pct.toFixed(0)}% cleared</span>
       </div>
       <div class="lib-actions">
         <button class="pay-btn" onclick="openPayModal('${l.id}')">💳 Record Payment</button>
-        <button class="del-btn-sm" onclick="openDelModal('${l.id}','liabilities')">Delete</button>
+        <button class="del-btn-sm" onclick="openDelModal('${l.id}','lib')">Delete</button>
       </div>`;
-    el.appendChild(div);
+    el.appendChild(d);
   });
 }
 
-// ── Transaction Card ──────────────────────────────────────────────────────
+// ── Tx Card ────────────────────────────────────────────────────────────────
 function txCard(t, showDel) {
-  const inc = t.type==='income';
-  const div = document.createElement('div');
-  div.className='tx-item';
-  div.innerHTML=`
-    <div class="tx-icon ${inc?'income-icon':'expense-icon'}">${t.emoji||'💳'}</div>
+  const inc = t.type === 'income';
+  const d = document.createElement('div');
+  d.className = 'tx-item';
+  d.innerHTML = `
+    <div class="tx-icon ${inc ? 'ii' : 'ei'}">${t.emoji || '💳'}</div>
     <div class="tx-info">
       <div class="tx-cat">${t.category}</div>
-      <div class="tx-note">${t.note||t.date}</div>
+      <div class="tx-note">${t.note || t.date}</div>
     </div>
     <div class="tx-right">
-      <div class="tx-amount ${inc?'green':'red'}">${inc?'+':'-'}KES ${fmt(t.amount)}</div>
+      <div class="tx-amount ${inc ? 'green' : 'red'}">${inc ? '+' : '-'}KES ${fmt(t.amount)}</div>
       <div class="tx-date">${t.date}</div>
     </div>
-    ${showDel?`<button class="del-btn" onclick="openDelModal('${t.id}','transactions')">
+    ${showDel ? `<button class="del-btn" onclick="openDelModal('${t.id}','tx')">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-    </button>`:''}`;
-  return div;
+    </button>` : ''}`;
+  return d;
 }
 
-// ── Add ───────────────────────────────────────────────────────────────────
+// ── Add ────────────────────────────────────────────────────────────────────
 function initAdd() {
-  document.getElementById('add-amount').value='';
-  document.getElementById('add-note').value='';
-  document.getElementById('add-date').value=new Date().toISOString().slice(0,10);
-  if(document.getElementById('lib-name'))    document.getElementById('lib-name').value='';
-  if(document.getElementById('lib-paid'))    document.getElementById('lib-paid').value='';
-  if(document.getElementById('lib-due'))     document.getElementById('lib-due').value='';
+  document.getElementById('add-amount').value = '';
+  document.getElementById('add-note').value   = '';
+  document.getElementById('add-date').value   = new Date().toISOString().slice(0, 10);
+  document.getElementById('lib-name').value   = '';
+  document.getElementById('lib-paid').value   = '';
+  document.getElementById('lib-due').value    = '';
+  addCat = ''; addEmoji = '💳';
   updateTypeUI();
   buildCatGrid();
 }
 
-function setType(t){ addType=t; addCat=''; updateTypeUI(); buildCatGrid(); }
+function setType(t) { addType = t; addCat = ''; updateTypeUI(); buildCatGrid(); }
 
 function updateTypeUI() {
-  document.getElementById('btn-expense').className   = 'type-btn'+(addType==='expense'?' active-expense':'');
-  document.getElementById('btn-income').className    = 'type-btn'+(addType==='income' ?' active-income':'');
-  document.getElementById('btn-liability').className = 'type-btn'+(addType==='liability'?' active-liability':'');
-  document.getElementById('lib-fields').style.display   = addType==='liability'?'flex':'none';
-  document.getElementById('cat-section').style.display  = 'flex';
-  document.getElementById('amount-label').textContent   = addType==='liability'?'Total Amount Owed (KES)':'Amount (KES)';
-  document.getElementById('save-btn').textContent = addType==='liability'?'Add Liability':'Save Transaction';
+  document.getElementById('btn-e').className = 'type-btn' + (addType === 'expense' ? ' ae' : '');
+  document.getElementById('btn-i').className = 'type-btn' + (addType === 'income'  ? ' ai' : '');
+  document.getElementById('btn-l').className = 'type-btn' + (addType === 'liability' ? ' al' : '');
+  document.getElementById('lib-fields').style.display = addType === 'liability' ? 'flex' : 'none';
+  document.getElementById('amount-lbl').textContent   = addType === 'liability' ? 'Total Amount Owed (KES)' : 'Amount (KES)';
+  document.getElementById('save-btn').textContent     = addType === 'liability' ? 'Add Liability' : 'Save Transaction';
 }
 
 function buildCatGrid() {
-  const cats = addType==='expense'?EXPENSE_CATS:addType==='income'?INCOME_CATS:LIABILITY_CATS;
   const grid = document.getElementById('cat-grid');
-  grid.innerHTML='';
-  cats.forEach(c=>{
-    const el=document.createElement('div');
-    el.className='cat-chip';
-    el.innerHTML=`<span class="cat-emoji">${c.e}</span>${c.l}`;
-    el.onclick=()=>selectCat(c,el);
+  grid.innerHTML = '';
+  CATS[addType].forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cat-chip';
+    el.innerHTML = `<span class="ce">${c.e}</span>${c.l}`;
+    el.onclick = () => {
+      addCat = c.l; addEmoji = c.e;
+      document.querySelectorAll('.cat-chip').forEach(x => x.classList.remove('se','si','sl'));
+      el.classList.add(addType === 'expense' ? 'se' : addType === 'income' ? 'si' : 'sl');
+    };
     grid.appendChild(el);
   });
-}
-
-function selectCat(c,el) {
-  addCat=c.l; addEmoji=c.e;
-  document.querySelectorAll('.cat-chip').forEach(x=>x.classList.remove('selected-expense','selected-income','selected-liability'));
-  el.classList.add('selected-'+addType);
 }
 
 async function saveRecord() {
   const amount = parseFloat(document.getElementById('add-amount').value);
   const date   = document.getElementById('add-date').value;
   const note   = document.getElementById('add-note').value.trim();
-  if(!amount||amount<=0){ showToast('Enter a valid amount'); return; }
-  if(!addCat)            { showToast('Pick a category'); return; }
-  if(!date)              { showToast('Select a date'); return; }
+  if (!amount || amount <= 0) { showToast('Enter a valid amount'); return; }
+  if (!addCat)                { showToast('Pick a category'); return; }
+  if (!date)                  { showToast('Select a date'); return; }
 
-  document.getElementById('save-btn').disabled=true;
-  try {
-    if(addType==='liability') {
-      const name = document.getElementById('lib-name').value.trim()||addCat;
-      const paid = parseFloat(document.getElementById('lib-paid').value)||0;
-      const due  = document.getElementById('lib-due').value||'';
-      await window._saveRecord('liability',{amount,category:addCat,emoji:addEmoji,name,paid,dueDate:due,note,date});
-    } else {
-      await window._saveRecord(addType,{type:addType,amount,category:addCat,emoji:addEmoji,note,date});
-    }
-    showToast('Saved ✓');
-    setTimeout(()=>showScreen('home'),600);
-  } catch(e){ showToast('Error saving'); }
-  document.getElementById('save-btn').disabled=false;
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+
+  const id = Date.now().toString();
+  if (addType === 'liability') {
+    const name = document.getElementById('lib-name').value.trim() || addCat;
+    const paid = parseFloat(document.getElementById('lib-paid').value) || 0;
+    const due  = document.getElementById('lib-due').value || '';
+    DB.libs = DB.libs || [];
+    DB.libs.push({ id, name, category: addCat, emoji: addEmoji, amount, paid, dueDate: due, note, date });
+  } else {
+    DB.txs.push({ id, type: addType, category: addCat, emoji: addEmoji, amount, note, date });
+  }
+
+  scheduleSave();
+  showToast('Saved ✓');
+  btn.disabled = false;
+  setTimeout(() => showScreen('home'), 500);
 }
 
-// ── Delete ────────────────────────────────────────────────────────────────
-function openDelModal(id,col){ pendingDeleteId=id; pendingDeleteCol=col; document.getElementById('del-modal').classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-async function confirmDelete() {
+// ── Delete ─────────────────────────────────────────────────────────────────
+function openDelModal(id, type) { pendingDelId = id; pendingDelType = type; document.getElementById('del-modal').classList.add('open'); }
+
+function confirmDelete() {
   closeModal('del-modal');
-  try{ await window._deleteRecord(pendingDeleteId, pendingDeleteCol); showToast('Deleted'); }
-  catch(e){ showToast('Error deleting'); }
+  if (pendingDelType === 'tx') {
+    DB.txs = DB.txs.filter(t => t.id !== pendingDelId);
+  } else {
+    DB.libs = (DB.libs || []).filter(l => l.id !== pendingDelId);
+  }
+  scheduleSave();
+  renderHistory();
+  renderLibs();
+  showToast('Deleted');
 }
 
-// ── Pay ───────────────────────────────────────────────────────────────────
-function openPayModal(id){ pendingPayId=id; document.getElementById('pay-amount').value=''; document.getElementById('pay-modal').classList.add('open'); }
-async function confirmPayment() {
+// ── Pay ────────────────────────────────────────────────────────────────────
+function openPayModal(id) { pendingPayId = id; document.getElementById('pay-amount').value = ''; document.getElementById('pay-modal').classList.add('open'); }
+
+function confirmPayment() {
   const amount = parseFloat(document.getElementById('pay-amount').value);
-  if(!amount||amount<=0){ showToast('Enter a valid amount'); return; }
+  if (!amount || amount <= 0) { showToast('Enter a valid amount'); return; }
   closeModal('pay-modal');
-  try {
-    const lib = window.DB_LIB.find(l=>l.id===pendingPayId);
-    if(!lib) return;
-    const newPaid = Math.min(lib.amount,(lib.paid||0)+amount);
-    await window._updateLib(pendingPayId,{paid:newPaid});
-    showToast('Payment recorded ✓');
-  } catch(e){ showToast('Error'); }
+  const lib = (DB.libs || []).find(l => l.id === pendingPayId);
+  if (!lib) return;
+  lib.paid = Math.min(lib.amount, (lib.paid || 0) + amount);
+  scheduleSave();
+  renderLibs();
+  showToast('Payment recorded ✓');
 }
 
-// ── Sync dot ──────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+function fmt(n) { return (n || 0).toLocaleString('en-KE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
 function setSyncDot(state) {
   const d = document.getElementById('sync-dot');
-  if(!d) return;
-  d.className='sync-dot'+(state==='syncing'?' syncing':state==='offline'?' offline':'');
+  if (!d) return;
+  d.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'err' ? ' err' : '');
 }
+function showErr(msg) { const b = document.getElementById('err-box'); b.textContent = msg; b.style.display = 'block'; }
+function hideErr()    { document.getElementById('err-box').style.display = 'none'; }
 
-// ── Toast ─────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2000);
-}
-
-// ── Format ────────────────────────────────────────────────────────────────
-function fmt(n){ return (n||0).toLocaleString('en-KE',{minimumFractionDigits:0,maximumFractionDigits:0}); }
-
-// ── Close modals on overlay click ─────────────────────────────────────────
-['del-modal','pay-modal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){ if(e.target===this) closeModal(id); });
+['del-modal', 'pay-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
 });
 
-// ── Safety net: if loading still showing after 4s, go to login ──────────
-setTimeout(() => { const l=document.getElementById("loading"); if(l&&l.style.display!=="none"){l.style.display="none";document.getElementById("login-screen").style.display="flex";}},4000);
+// ── Boot ───────────────────────────────────────────────────────────────────
+(async () => {
+  TOKEN   = localStorage.getItem('bt_token') || '';
+  GIST_ID = localStorage.getItem('bt_gist')  || '';
+  const cached = localStorage.getItem('bt_cache');
 
-// ── PWA Manifest ──────────────────────────────────────────────────────────
-const manifest={name:"Budget Tracker",short_name:"Budget",start_url:"./",display:"standalone",background_color:"#0F1B2D",theme_color:"#0F1B2D",orientation:"portrait",
-  icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230F1B2D' rx='80'/><text y='340' x='256' text-anchor='middle' font-size='300'>💰</text></svg>",sizes:"512x512",type:"image/svg+xml"}]};
-const mblob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
-const mlink=document.createElement('link');mlink.rel='manifest';mlink.href=URL.createObjectURL(mblob);
-document.head.appendChild(mlink);
+  if (!TOKEN) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    return;
+  }
 
-// ── Service Worker ────────────────────────────────────────────────────────
-if('serviceWorker' in navigator){
-  const sw=`const C='budget-v2';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./',]))); self.skipWaiting();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;
-  const swblob=new Blob([sw],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(swblob));
+  // Load from cache immediately so app feels instant
+  if (cached) { try { DB = JSON.parse(cached); } catch(e) {} }
+
+  try {
+    setSyncDot('syncing');
+    // Re-verify & fetch fresh from Gist
+    const me = await fetch('https://api.github.com/user', { headers: { Authorization: 'token ' + TOKEN } });
+    if (!me.ok) throw new Error('token_invalid');
+    DB = await gistGet();
+    localStorage.setItem('bt_cache', JSON.stringify(DB));
+    setSyncDot('ok');
+    launchApp();
+  } catch(e) {
+    if (e.message === 'token_invalid' || !cached) {
+      // Token expired or no cache — force re-login
+      localStorage.removeItem('bt_token');
+      localStorage.removeItem('bt_gist');
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+    } else {
+      // Offline — use cache
+      setSyncDot('err');
+      launchApp();
+      showToast('Offline — using cached data');
+    }
+  }
+})();
+
+// ── PWA Manifest ───────────────────────────────────────────────────────────
+const mf = {name:'Budget Tracker',short_name:'Budget',start_url:'./',display:'standalone',background_color:'#0F1B2D',theme_color:'#0F1B2D',orientation:'portrait',
+  icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230F1B2D' rx='80'/><text y='340' x='256' text-anchor='middle' font-size='300'>💰</text></svg>",sizes:'512x512',type:'image/svg+xml'}]};
+const ml=document.createElement('link'); ml.rel='manifest'; ml.href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:'application/json'}));
+document.head.appendChild(ml);
+
+if ('serviceWorker' in navigator) {
+  const sw = `const C='bt-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])));self.skipWaiting();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})));
 }
 </script>
 </body>
