@@ -191,9 +191,56 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:500}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--indigo);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* PIN Screen */
+#pin-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:24px;z-index:400;padding:32px 24px}
+#pin-screen .logo{font-size:52px}
+#pin-screen h2{font-size:22px;font-weight:800;letter-spacing:-.5px}
+#pin-screen .sub{font-size:14px;color:var(--slate);text-align:center}
+.pin-dots{display:flex;gap:16px;align-items:center}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);transition:all .15s}
+.pin-dot.filled{background:var(--indigo);border-color:var(--indigo);transform:scale(1.1)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:280px}
+.pin-key{background:var(--card);border:none;border-radius:14px;height:64px;font-family:inherit;font-size:22px;font-weight:700;color:var(--text);cursor:pointer;transition:background .1s,transform .1s;display:flex;align-items:center;justify-content:center}
+.pin-key:active{background:var(--card2);transform:scale(.94)}
+.pin-key.del{font-size:18px;color:var(--slate)}
+.pin-key.empty{background:transparent;pointer-events:none}
+.pin-error{font-size:13px;color:var(--red);font-weight:600;min-height:18px;text-align:center}
+.pin-forgot{background:none;border:none;color:var(--slate);font-family:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
+
+
+<!-- PIN Screen -->
+<div id="pin-screen">
+  <div class="logo">🔒</div>
+  <h2 id="pin-title">Enter PIN</h2>
+  <p class="sub" id="pin-sub">Enter your 4-digit PIN to access Budget Tracker</p>
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinKey('1')">1</button>
+    <button class="pin-key" onclick="pinKey('2')">2</button>
+    <button class="pin-key" onclick="pinKey('3')">3</button>
+    <button class="pin-key" onclick="pinKey('4')">4</button>
+    <button class="pin-key" onclick="pinKey('5')">5</button>
+    <button class="pin-key" onclick="pinKey('6')">6</button>
+    <button class="pin-key" onclick="pinKey('7')">7</button>
+    <button class="pin-key" onclick="pinKey('8')">8</button>
+    <button class="pin-key" onclick="pinKey('9')">9</button>
+    <div class="pin-key empty"></div>
+    <button class="pin-key" onclick="pinKey('0')">0</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
+  </div>
+  <button class="pin-forgot" id="pin-forgot-btn" onclick="pinForgot()">Forgot PIN?</button>
+</div>
 
 <!-- Loading -->
 <div id="loading">
@@ -801,6 +848,113 @@ function hideErr()    { document.getElementById('err-box').style.display = 'none
   document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
 });
 
+
+// ── PIN Logic ──────────────────────────────────────────────────────────────
+let pinBuffer   = '';
+let pinMode     = 'enter';   // 'setup' | 'enter' | 'confirm'
+let pinSetupTemp = '';
+
+function showPinScreen(mode) {
+  pinBuffer = ''; pinMode = mode;
+  document.getElementById('pin-screen').style.display = 'flex';
+  document.getElementById('loading').style.display    = 'none';
+  updatePinDots();
+
+  const title  = document.getElementById('pin-title');
+  const sub    = document.getElementById('pin-sub');
+  const forgot = document.getElementById('pin-forgot-btn');
+  const err    = document.getElementById('pin-error');
+  err.textContent = '';
+
+  if (mode === 'setup') {
+    title.textContent = 'Create PIN';
+    sub.textContent   = 'Choose a 4-digit PIN to protect your data';
+    forgot.style.display = 'none';
+  } else if (mode === 'confirm') {
+    title.textContent = 'Confirm PIN';
+    sub.textContent   = 'Enter your PIN again to confirm';
+    forgot.style.display = 'none';
+  } else {
+    title.textContent = 'Welcome Back';
+    sub.textContent   = 'Enter your PIN to access Budget Tracker';
+    forgot.style.display = 'block';
+  }
+}
+
+function pinKey(d) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += d;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(handlePin, 150);
+}
+
+function pinDel() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pin-error').textContent = '';
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('pd' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+function shakeDots() {
+  const wrap = document.getElementById('pin-dots');
+  wrap.style.animation = 'none';
+  setTimeout(() => { wrap.style.animation = 'shake .35s ease'; }, 10);
+  setTimeout(() => { wrap.style.animation = ''; }, 400);
+}
+
+function hashPin(pin) {
+  // Simple hash — good enough for local PIN (not crypto)
+  let h = 0;
+  for (let i = 0; i < pin.length; i++) h = Math.imul(31, h) + pin.charCodeAt(i) | 0;
+  return h.toString(36) + pin.length;
+}
+
+function handlePin() {
+  const stored = localStorage.getItem('bt_pin');
+
+  if (pinMode === 'setup') {
+    pinSetupTemp = pinBuffer;
+    pinBuffer    = '';
+    updatePinDots();
+    showPinScreen('confirm');
+
+  } else if (pinMode === 'confirm') {
+    if (pinBuffer === pinSetupTemp) {
+      localStorage.setItem('bt_pin', hashPin(pinBuffer));
+      document.getElementById('pin-screen').style.display = 'none';
+      launchApp();
+    } else {
+      document.getElementById('pin-error').textContent = 'PINs do not match. Try again.';
+      shakeDots();
+      pinBuffer = ''; pinSetupTemp = '';
+      updatePinDots();
+      setTimeout(() => showPinScreen('setup'), 800);
+    }
+
+  } else {
+    // Enter mode
+    if (stored && hashPin(pinBuffer) === stored) {
+      document.getElementById('pin-screen').style.display = 'none';
+      launchApp();
+    } else {
+      document.getElementById('pin-error').textContent = 'Incorrect PIN. Try again.';
+      shakeDots();
+      pinBuffer = ''; updatePinDots();
+    }
+  }
+}
+
+function pinForgot() {
+  if (!confirm('Reset PIN? You will need to reconnect your GitHub token.')) return;
+  localStorage.clear();
+  location.reload();
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────
 (async () => {
   TOKEN   = localStorage.getItem('bt_token') || '';
@@ -824,20 +978,25 @@ function hideErr()    { document.getElementById('err-box').style.display = 'none
     DB = await gistGet();
     localStorage.setItem('bt_cache', JSON.stringify(DB));
     setSyncDot('ok');
-    launchApp();
   } catch(e) {
     if (e.message === 'token_invalid' || !cached) {
-      // Token expired or no cache — force re-login
       localStorage.removeItem('bt_token');
       localStorage.removeItem('bt_gist');
       document.getElementById('loading').style.display = 'none';
       document.getElementById('login-screen').style.display = 'flex';
+      return;
     } else {
-      // Offline — use cache
       setSyncDot('err');
-      launchApp();
       showToast('Offline — using cached data');
     }
+  }
+
+  // Show PIN gate or setup
+  const storedPin = localStorage.getItem('bt_pin');
+  if (storedPin) {
+    showPinScreen('enter');
+  } else {
+    showPinScreen('setup');
   }
 })();
 
