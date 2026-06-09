@@ -454,8 +454,33 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 
 <!-- Firebase SDK -->
 <script type="module">
+
+// ── Guard: show helpful message if config not yet filled in ───────────────
+const isConfigured = FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith('YOUR');
+if (!isConfigured) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  // Swap the sign-in button for a setup notice
+  document.querySelector('.google-btn').outerHTML = `
+    <div style="background:#1C2B3A;border:1.5px solid #FFB300;border-radius:12px;padding:16px 20px;max-width:320px;text-align:left">
+      <div style="font-size:15px;font-weight:700;color:#FFB300;margin-bottom:8px">⚠️ Firebase not configured</div>
+      <div style="font-size:13px;color:#B0BAC8;line-height:1.6">
+        Open <b style="color:#E8EDF5">BudgetTracker_v2.html</b> in a text editor and replace the
+        <b style="color:#E8EDF5">FIREBASE_CONFIG</b> values at the top with your project's keys.<br><br>
+        See the setup guide that came with this file.
+      </div>
+    </div>`;
+  // Stub out Firebase functions so nothing else crashes
+  window.signInWithGoogle = () => {};
+  window.signOut = () => {};
+  window._saveRecord = async () => {};
+  window._deleteRecord = async () => {};
+  window._updateLib = async () => {};
+  throw new Error('Firebase not configured — stopping module execution.');
+}
+
 import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged }
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut as fbSignOut, onAuthStateChanged }
                                                 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query, where, updateDoc }
                                                 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -472,11 +497,20 @@ let currentUser = null;
 window.DB_TX  = [];
 window.DB_LIB = [];
 
+// ── Handle redirect result (fires after Google redirects back) ────────────
+getRedirectResult(auth).catch(() => {
+  // Ignore — onAuthStateChanged handles the success case
+});
+
 // ── Auth ──────────────────────────────────────────────────────────────────
 window.signInWithGoogle = async () => {
   try {
-    await signInWithPopup(auth, new GoogleAuthProvider());
-  } catch(e) { showToast('Sign-in failed'); }
+    const btn = document.querySelector('.google-btn');
+    if (btn) { btn.textContent = 'Redirecting to Google…'; btn.disabled = true; }
+    await signInWithRedirect(auth, new GoogleAuthProvider());
+  } catch(e) {
+    showToast('Sign-in failed: ' + (e.message || e.code));
+  }
 };
 
 window.signOut = async () => {
@@ -844,6 +878,9 @@ function fmt(n){ return (n||0).toLocaleString('en-KE',{minimumFractionDigits:0,m
 ['del-modal','pay-modal'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){ if(e.target===this) closeModal(id); });
 });
+
+// ── Safety net: if loading still showing after 4s, go to login ──────────
+setTimeout(() => { const l=document.getElementById("loading"); if(l&&l.style.display!=="none"){l.style.display="none";document.getElementById("login-screen").style.display="flex";}},4000);
 
 // ── PWA Manifest ──────────────────────────────────────────────────────────
 const manifest={name:"Budget Tracker",short_name:"Budget",start_url:"./",display:"standalone",background_color:"#0F1B2D",theme_color:"#0F1B2D",orientation:"portrait",
