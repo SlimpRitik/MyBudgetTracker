@@ -479,7 +479,7 @@ const CATS = {
 let TOKEN   = '';
 let GIST_ID = '';
 let DB      = { txs: [], libs: [] };
-let currentMonth = new Date().toISOString().slice(0,7);
+const _now = new Date(); let currentMonth = _now.getFullYear() + '-' + String(_now.getMonth()+1).padStart(2,'0');
 let addType = 'expense', addCat = '', addEmoji = '💳';
 let filterType = 'all';
 let pendingDelId = null, pendingDelType = null, pendingPayId = null;
@@ -611,7 +611,7 @@ function showScreen(name) {
 function changeMonth(dir) {
   const [y, m] = currentMonth.split('-').map(Number);
   const d = new Date(y, m - 1 + dir, 1);
-  currentMonth = d.toISOString().slice(0, 7);
+  currentMonth = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
   const active = document.querySelector('.screen.active')?.id?.replace('screen-', '');
   if (active === 'home')    renderHome();
   if (active === 'history') renderHistory();
