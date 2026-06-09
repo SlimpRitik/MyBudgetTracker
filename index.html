@@ -497,19 +497,42 @@ let currentUser = null;
 window.DB_TX  = [];
 window.DB_LIB = [];
 
+// ── Error display helper ──────────────────────────────────────────────────
+function showAuthError(msg) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  let errBox = document.getElementById('auth-error-box');
+  if (!errBox) {
+    errBox = document.createElement('div');
+    errBox.id = 'auth-error-box';
+    errBox.style.cssText = 'background:#1C2B3A;border:1.5px solid #FF4F5E;border-radius:12px;padding:14px 16px;max-width:320px;font-size:13px;color:#FF4F5E;line-height:1.5;word-break:break-all;text-align:left';
+    document.getElementById('login-screen').appendChild(errBox);
+  }
+  errBox.innerHTML = '<b>❌ Error:</b><br>' + msg;
+}
+
 // ── Handle redirect result (fires after Google redirects back) ────────────
-getRedirectResult(auth).catch(() => {
-  // Ignore — onAuthStateChanged handles the success case
-});
+getRedirectResult(auth)
+  .then(result => {
+    if (result && result.user) {
+      // successfully signed in via redirect — onAuthStateChanged will fire
+    }
+  })
+  .catch(e => {
+    showAuthError((e.code || '') + '<br>' + (e.message || String(e)));
+  });
 
 // ── Auth ──────────────────────────────────────────────────────────────────
 window.signInWithGoogle = async () => {
+  const btn = document.querySelector('.google-btn');
   try {
-    const btn = document.querySelector('.google-btn');
     if (btn) { btn.textContent = 'Redirecting to Google…'; btn.disabled = true; }
-    await signInWithRedirect(auth, new GoogleAuthProvider());
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await signInWithRedirect(auth, provider);
   } catch(e) {
-    showToast('Sign-in failed: ' + (e.message || e.code));
+    if (btn) { btn.textContent = 'Sign in with Google'; btn.disabled = false; }
+    showAuthError((e.code || '') + '<br>' + (e.message || String(e)));
   }
 };
 
@@ -535,6 +558,8 @@ onAuthStateChanged(auth, user => {
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
+}, e => {
+  showAuthError('Auth state error:<br>' + (e.code || '') + '<br>' + (e.message || String(e)));
 });
 
 // ── Realtime sync ─────────────────────────────────────────────────────────
