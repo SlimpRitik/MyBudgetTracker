@@ -246,6 +246,13 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 #notif-prompt .np-text b{color:var(--text);display:block;margin-bottom:2px}
 .np-yes{background:var(--indigo);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
 .np-no{background:none;border:none;color:var(--slate);font-family:inherit;font-size:13px;cursor:pointer;padding:6px}
+
+/* Clickable tiles */
+.tile-link{cursor:pointer;transition:transform .15s, box-shadow .15s;position:relative}
+.tile-link:active{transform:scale(.97)}
+.tile-link::after{content:'';position:absolute;inset:0;border-radius:var(--radius);border:1.5px solid transparent;transition:border-color .15s}
+.tile-link:active::after{border-color:rgba(255,255,255,.1)}
+.tile-cta{font-size:11px;color:var(--slate);margin-top:6px;font-weight:600;letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -338,12 +345,24 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
         <div class="flow-labels"><span>💚 Income</span><span>Expense ❤️</span></div>
       </div>
       <div class="tiles">
-        <div class="tile"><div class="tile-icon g">💰</div><div class="tile-label">Income</div><div class="tile-amount green" id="home-income">KES 0</div></div>
-        <div class="tile"><div class="tile-icon r">💸</div><div class="tile-label">Expenses</div><div class="tile-amount red" id="home-expense">KES 0</div></div>
+        <div class="tile tile-link" onclick="goToFilter('income')" title="View income records">
+          <div class="tile-icon g">💰</div><div class="tile-label">Income</div>
+          <div class="tile-amount green" id="home-income">KES 0</div>
+
+        </div>
+        <div class="tile tile-link" onclick="goToFilter('expense')" title="View expense records">
+          <div class="tile-icon r">💸</div><div class="tile-label">Expenses</div>
+          <div class="tile-amount red" id="home-expense">KES 0</div>
+
+        </div>
       </div>
-      <div class="tile" style="background:linear-gradient(135deg,#1a2800,#1C2B3A)">
+      <div class="tile tile-link" style="background:linear-gradient(135deg,#1a2800,#1C2B3A)" onclick="showScreen('liabilities')" title="View liabilities">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div class="tile-label">Total Liabilities</div><div class="tile-amount amber" id="home-libs">KES 0</div></div>
+          <div>
+            <div class="tile-label">Total Liabilities</div>
+            <div class="tile-amount amber" id="home-libs">KES 0</div>
+
+          </div>
           <span style="font-size:32px">⚖️</span>
         </div>
       </div>
@@ -800,6 +819,12 @@ function renderHistory() {
   el.innerHTML = '';
   if (!txs.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">🔍</span><p>No records found</p></div>'; return; }
   txs.forEach(t => el.appendChild(txCard(t, true)));
+}
+
+
+function goToFilter(type) {
+  filterType = type;
+  showScreen('history');
 }
 
 function setFilter(f) { filterType = f; renderHistory(); }
