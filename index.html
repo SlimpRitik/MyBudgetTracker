@@ -309,7 +309,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
         </div>
       </div>
       <div class="section-head">
-        <h2>Recent Transactions</h2>
+        <h2>Today's Transactions</h2>
         <button onclick="showScreen('history')">See all</button>
       </div>
       <div class="tx-list" id="home-recent"></div>
@@ -647,10 +647,11 @@ function renderHome() {
   const hr = new Date().getHours();
   setText('home-greeting', hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening');
 
-  const recent = [...txs].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const today = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0') + '-' + String(new Date().getDate()).padStart(2,'0');
+  const recent = [...txs].filter(t => t.date === today).sort((a, b) => b.date.localeCompare(a.date));
   const el = document.getElementById('home-recent');
   el.innerHTML = '';
-  if (!recent.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No transactions this month</p></div>'; return; }
+  if (!recent.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No transactions today</p></div>'; return; }
   recent.forEach(t => el.appendChild(txCard(t, false)));
 }
 
