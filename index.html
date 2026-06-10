@@ -239,6 +239,13 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .summary-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:12px;padding:14px 16px;font-size:14px}
 .summary-row span:first-child{color:var(--slate);font-weight:600}
 .summary-row span:last-child{font-weight:800}
+
+/* Notification prompt */
+#notif-prompt{position:fixed;bottom:calc(var(--nav-h)+10px);left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:440px;background:#1C2B3A;border:1.5px solid var(--indigo);border-radius:14px;padding:14px 16px;display:none;align-items:center;gap:12px;z-index:150;box-shadow:0 4px 20px #0006}
+#notif-prompt .np-text{flex:1;font-size:13px;line-height:1.4;color:var(--sub)}
+#notif-prompt .np-text b{color:var(--text);display:block;margin-bottom:2px}
+.np-yes{background:var(--indigo);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.np-no{background:none;border:none;color:var(--slate);font-family:inherit;font-size:13px;cursor:pointer;padding:6px}
 </style>
 </head>
 <body>
@@ -315,6 +322,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
             <span id="home-month-label"></span>
             <button class="icon-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
+          <button onclick="toggleNotifSetting()" id="notif-toggle-btn" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:18px;padding:4px" title="Notifications">🔔</button>
           <button onclick="logout()" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:18px;padding:4px" title="Sign out">⏻</button>
         </div>
       </div>
@@ -504,6 +512,18 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 
 <div class="toast" id="toast"></div>
 
+<!-- Notification Prompt Banner -->
+<div id="notif-prompt">
+  <span style="font-size:24px">🔔</span>
+  <div class="np-text">
+    <b>Enable Notifications?</b>
+    Get alerts for overdue bills and debts
+  </div>
+  <button class="np-yes" onclick="enableNotifications();hideNotifPrompt()">Enable</button>
+  <button class="np-no" onclick="hideNotifPrompt()">Not now</button>
+</div>
+
+
 <!-- Delete Modal -->
 <div class="modal-overlay" id="del-modal">
   <div class="modal">
@@ -679,6 +699,17 @@ function launchApp() {
   setSyncDot('ok');
   renderHome();
   initAdd();
+  // Auto-request notifications if previously enabled, else prompt once
+  if (localStorage.getItem('bt_notif') === '1') {
+    setTimeout(checkAndNotify, 2000);
+  } else if (!localStorage.getItem('bt_notif_asked')) {
+    localStorage.setItem('bt_notif_asked','1');
+    setTimeout(async () => {
+      if ('Notification' in window && Notification.permission !== 'denied') {
+        showNotifPrompt();
+      }
+    }, 3000);
+  }
 }
 
 // ── Persist (debounced) ───────────────────────────────────────────────────
@@ -971,6 +1002,19 @@ function confirmPayment() {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+
+function toggleNotifSetting() {
+  if (localStorage.getItem('bt_notif') === '1') {
+    localStorage.removeItem('bt_notif');
+    document.getElementById('notif-toggle-btn').style.opacity = '0.4';
+    showToast('Notifications disabled');
+  } else {
+    enableNotifications();
+  }
+}
+function showNotifPrompt() { document.getElementById('notif-prompt').style.display='flex'; }
+function hideNotifPrompt() { document.getElementById('notif-prompt').style.display='none'; }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
 function fmt(n) { return (n || 0).toLocaleString('en-KE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
@@ -1287,6 +1331,120 @@ function savePlanItem() {
   showToast(planEditId ? 'Updated ✓' : 'Bill added ✓');
 }
 
+
+// ── Notifications ──────────────────────────────────────────────────────────
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function sendNotif(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const reg = window._swReg;
+  if (reg && reg.showNotification) {
+    reg.showNotification(title, { body, icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230F1B2D' rx='80'/><text y='340' x='256' text-anchor='middle' font-size='300'>💰</text></svg>", tag, badge: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><circle cx='48' cy='48' r='48' fill='%233D5AFE'/></svg>", vibrate: [200, 100, 200] });
+  } else {
+    new Notification(title, { body, tag });
+  }
+}
+
+function checkAndNotify() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  const today = new Date();
+  const todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  const thisMonth = todayStr.slice(0,7);
+  const lastNotifDay = localStorage.getItem('bt_last_notif');
+  // Only notify once per day
+  if (lastNotifDay === todayStr) return;
+  localStorage.setItem('bt_last_notif', todayStr);
+
+  const overdueLibs = (DB.libs||[]).filter(l => {
+    const rem = l.amount - (l.paid||0);
+    return rem > 0 && l.dueDate && new Date(l.dueDate) < today;
+  });
+
+  const overduePlans = (DB.plans||[]).filter(p => {
+    const isPaid = (p.payments||[]).some(x => x.startsWith(thisMonth));
+    if (isPaid) return false;
+    const dueDate = thisMonth+'-'+String(p.dueDay||1).padStart(2,'0');
+    return new Date(dueDate) < today;
+  });
+
+  const dueSoonPlans = (DB.plans||[]).filter(p => {
+    const isPaid = (p.payments||[]).some(x => x.startsWith(thisMonth));
+    if (isPaid) return false;
+    const dueDate = new Date(thisMonth+'-'+String(p.dueDay||1).padStart(2,'0'));
+    const diff = (dueDate - today) / (1000*60*60*24);
+    return diff >= 0 && diff <= 3;
+  });
+
+  const dueSoonLibs = (DB.libs||[]).filter(l => {
+    const rem = l.amount - (l.paid||0);
+    if (rem <= 0 || !l.dueDate) return false;
+    const diff = (new Date(l.dueDate) - today) / (1000*60*60*24);
+    return diff >= 0 && diff <= 3;
+  });
+
+  // Fire notifications
+  if (overdueLibs.length > 0) {
+    const names = overdueLibs.map(l => l.name||l.category).join(', ');
+    sendNotif(
+      '⚠️ Overdue Debt' + (overdueLibs.length > 1 ? 's' : ''),
+      overdueLibs.length === 1
+        ? `${names} — KES ${fmt(overdueLibs[0].amount - (overdueLibs[0].paid||0))} is overdue!`
+        : `${overdueLibs.length} debts are overdue: ${names}`,
+      'overdue-libs'
+    );
+  }
+
+  if (overduePlans.length > 0) {
+    const names = overduePlans.map(p => p.name).join(', ');
+    sendNotif(
+      '⚠️ Overdue Bill' + (overduePlans.length > 1 ? 's' : ''),
+      overduePlans.length === 1
+        ? `${names} — KES ${fmt(overduePlans[0].amount)} bill is overdue!`
+        : `${overduePlans.length} bills overdue: ${names}`,
+      'overdue-plans'
+    );
+  }
+
+  if (dueSoonLibs.length > 0 && overdueLibs.length === 0) {
+    const l = dueSoonLibs[0];
+    const days = Math.ceil((new Date(l.dueDate) - today) / (1000*60*60*24));
+    sendNotif(
+      '🔔 Debt Due Soon',
+      `${l.name||l.category} — KES ${fmt(l.amount-(l.paid||0))} due in ${days} day${days===1?'':'s'}`,
+      'soon-libs'
+    );
+  }
+
+  if (dueSoonPlans.length > 0 && overduePlans.length === 0) {
+    const p = dueSoonPlans[0];
+    const dueDate = new Date(thisMonth+'-'+String(p.dueDay||1).padStart(2,'0'));
+    const days = Math.ceil((dueDate - today) / (1000*60*60*24));
+    sendNotif(
+      '🔔 Bill Due Soon',
+      `${p.name} — KES ${fmt(p.amount)} due in ${days} day${days===1?'':'s'}`,
+      'soon-plans'
+    );
+  }
+}
+
+async function enableNotifications() {
+  const granted = await requestNotifPermission();
+  if (granted) {
+    localStorage.setItem('bt_notif', '1');
+    checkAndNotify();
+    showToast('Notifications enabled ✓');
+  } else {
+    showToast('Notifications blocked — enable in browser settings');
+  }
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────
 (async () => {
   TOKEN   = localStorage.getItem('bt_token') || '';
@@ -1339,8 +1497,22 @@ const ml=document.createElement('link'); ml.rel='manifest'; ml.href=URL.createOb
 document.head.appendChild(ml);
 
 if ('serviceWorker' in navigator) {
-  const sw = `const C='bt-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])));self.skipWaiting();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;
-  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})));
+  const sw = `
+    const C='bt-v2';
+    self.addEventListener('install', e => { e.waitUntil(caches.open(C).then(c => c.addAll(['./']).catch(()=>{}))); self.skipWaiting(); });
+    self.addEventListener('activate', e => { self.clients.claim(); });
+    self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); });
+    self.addEventListener('notificationclick', e => {
+      e.notification.close();
+      e.waitUntil(clients.matchAll({type:'window'}).then(cs => {
+        if (cs.length) cs[0].focus();
+        else clients.openWindow('./');
+      }));
+    });
+  `;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).then(reg => {
+    window._swReg = reg;
+  });
 }
 </script>
 </body>
