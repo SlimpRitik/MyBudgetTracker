@@ -19,7 +19,7 @@
   --red:#FF4F5E;--red-bg:#FF4F5E20;
   --amber:#FFB300;--amber-bg:#FFB30020;
   --slate:#8892A4;--text:#E8EDF5;--sub:#B0BAC8;
-  --border:#2A3D52;--radius:16px;--nav-h:66px;
+  --border:#2A3D52;--radius:16px;--nav-h:62px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;max-width:480px;margin:0 auto;overflow-x:hidden}
@@ -116,7 +116,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:8px 12px;color:var(--slate);transition:color .15s;font-family:inherit}
 .nav-item.active{color:var(--indigo2)}
 .nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.nav-item span{font-size:10px;font-weight:600;letter-spacing:.3px}
+.nav-item span{font-size:9px;font-weight:600;letter-spacing:.3px}
 
 /* FAB */
 .fab{position:fixed;bottom:calc(var(--nav-h)+16px);right:20px;width:52px;height:52px;border-radius:50%;background:var(--indigo);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px #3D5AFE55;z-index:50;transition:transform .15s}
@@ -254,6 +254,125 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .tile-link::after{content:'';position:absolute;inset:0;border-radius:var(--radius);border:1.5px solid transparent;transition:border-color .15s}
 .tile-link:active::after{border-color:rgba(255,255,255,.1)}
 .tile-cta{font-size:11px;color:var(--slate);margin-top:6px;font-weight:600;letter-spacing:.3px}
+
+/* ── Redesigned Dashboard ───────────────────────────────────── */
+.dash-header{padding:48px 20px 12px;background:linear-gradient(180deg,#0d1a2b 0%,var(--bg) 100%);position:sticky;top:0;z-index:10}
+.dash-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dash-top h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.dash-top-right{display:flex;align-items:center;gap:6px}
+.dash-icon-btn{background:var(--card);border:none;border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--sub);transition:background .15s}
+.dash-icon-btn:active{background:var(--card2)}
+.dash-month-row{display:flex;align-items:center;justify-content:space-between}
+.dash-month-nav{display:flex;align-items:center;gap:4px;background:var(--card);border-radius:10px;padding:4px 8px}
+.dash-month-nav span{font-size:13px;font-weight:700;min-width:96px;text-align:center}
+
+/* Balance hero */
+.hero-card{background:linear-gradient(135deg,#1a3a5c,#0f2540);border:1px solid #1e3d5e;border-radius:20px;padding:22px 20px 18px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#3D5AFE22,transparent 70%)}
+.hero-card::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#00C89610,transparent 70%)}
+.hero-label{font-size:11px;font-weight:700;color:var(--slate);letter-spacing:1px;text-transform:uppercase}
+.hero-amount{font-size:38px;font-weight:800;letter-spacing:-2px;margin:4px 0 4px}
+.hero-amount.pos{color:#4DF0B8}.hero-amount.neg{color:#FF6B78}
+.hero-sub{font-size:12px;color:var(--slate);margin-bottom:16px}
+.hero-bars{display:flex;gap:0;height:6px;border-radius:6px;overflow:hidden;background:var(--border)}
+.hbar-i{background:var(--green);transition:width .7s cubic-bezier(.4,0,.2,1)}
+.hbar-e{background:var(--red);transition:width .7s cubic-bezier(.4,0,.2,1)}
+.hero-bar-labels{display:flex;justify-content:space-between;margin-top:7px}
+.hero-bar-labels span{font-size:11px;color:var(--slate);display:flex;align-items:center;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+/* Quick stats row */
+.quick-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.qs-card{background:var(--card);border-radius:14px;padding:14px 10px;cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden}
+.qs-card:active{transform:scale(.96)}
+.qs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.qs-card.income::before{background:var(--green)}
+.qs-card.expense::before{background:var(--red)}
+.qs-card.liability::before{background:var(--amber)}
+.qs-icon{font-size:20px;margin-bottom:6px}
+.qs-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--slate);margin-bottom:4px}
+.qs-value{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.qs-value.g{color:var(--green)}.qs-value.r{color:var(--red)}.qs-value.a{color:var(--amber)}
+
+/* Overspend alert */
+.alert-banner{border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.alert-banner.warn{background:#2a1800;border:1px solid #FF8C00}
+.alert-banner.danger{background:#2a0808;border:1px solid var(--red)}
+.alert-banner.ok{background:#002a1a;border:1px solid var(--green)}
+.alert-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.alert-body{}
+.alert-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.alert-msg{font-size:12px;color:var(--sub);line-height:1.5}
+
+/* Monthly summary section */
+.summary-card{background:var(--card);border-radius:16px;padding:16px}
+.summary-card h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.summary-row-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.summary-row-item:last-child{border-bottom:none;padding-bottom:0}
+.sri-left{display:flex;align-items:center;gap:10px}
+.sri-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sri-label{font-size:13px;font-weight:600}
+.sri-sub{font-size:11px;color:var(--slate);margin-top:1px}
+.sri-right{text-align:right}
+.sri-value{font-size:14px;font-weight:800}
+.sri-pct{font-size:11px;color:var(--slate);margin-top:1px}
+.cat-bar-wrap{height:4px;background:var(--border);border-radius:4px;margin-top:6px;overflow:hidden}
+.cat-bar{height:100%;border-radius:4px;transition:width .6s}
+
+/* Quick Actions grid */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qa-btn{background:var(--card);border:none;border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s,transform .12s;font-family:inherit;text-align:left;width:100%}
+.qa-btn:active{background:var(--card2);transform:scale(.97)}
+.qa-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.qa-text{}
+.qa-title{font-size:13px;font-weight:700;color:var(--text)}
+.qa-sub{font-size:11px;color:var(--slate);margin-top:1px}
+
+/* Section headers */
+.sec-head{display:flex;align-items:center;justify-content:space-between}
+.sec-head h2{font-size:14px;font-weight:700;color:var(--sub);letter-spacing:.3px;text-transform:uppercase}
+.sec-head button{background:none;border:none;color:var(--indigo2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* Interest Calculator screen */
+#screen-calc .header{padding:52px 20px 16px}
+.calc-type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card);border-radius:12px;padding:6px}
+.calc-type-btn{padding:10px;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--slate);transition:all .2s}
+.calc-type-btn.active{background:var(--indigo);color:#fff}
+.calc-result-card{background:linear-gradient(135deg,#1a2f1a,#1C2B3A);border:1px solid #2a4a2a;border-radius:16px;padding:20px}
+.calc-result-label{font-size:11px;font-weight:700;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.calc-result-val{font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--green)}
+.calc-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.calc-bd-item{background:#ffffff0a;border-radius:10px;padding:10px}
+.calc-bd-label{font-size:10px;font-weight:600;color:var(--slate);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.calc-bd-val{font-size:15px;font-weight:800}
+.calc-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.calc-table th{text-align:left;padding:8px 4px;color:var(--slate);font-weight:600;border-bottom:1px solid var(--border)}
+.calc-table td{padding:7px 4px;border-bottom:1px solid #ffffff0a;color:var(--text)}
+.calc-table tr:last-child td{border-bottom:none}
+.calc-btn{background:var(--indigo);color:#fff;border:none;border-radius:12px;padding:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:opacity .15s}
+.calc-btn:active{opacity:.85}
+
+/* ── Frequent Expense Detection ─────────────────────────────── */
+.freq-card{background:var(--card);border-radius:16px;padding:16px}
+.freq-card h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.freq-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.freq-item:last-child{border-bottom:none;padding-bottom:0}
+.freq-badge{background:var(--indigo);color:#fff;border-radius:6px;font-size:10px;font-weight:800;padding:3px 7px;letter-spacing:.3px;white-space:nowrap}
+.freq-badge.high{background:var(--red)}
+.freq-badge.medium{background:var(--amber);color:#1a1a1a}
+.freq-badge.low{background:var(--card2);color:var(--sub)}
+.freq-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:var(--red-bg)}
+.freq-info{flex:1;min-width:0}
+.freq-name{font-size:13px;font-weight:700}
+.freq-meta{font-size:11px;color:var(--slate);margin-top:2px}
+.freq-right{text-align:right;flex-shrink:0}
+.freq-total{font-size:14px;font-weight:800;color:var(--red)}
+.freq-avg{font-size:11px;color:var(--slate);margin-top:2px}
+.freq-insight{background:var(--card2);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--sub);line-height:1.6;border-left:3px solid var(--indigo)}
+.freq-insight b{color:var(--text)}
+.freq-tabs{display:flex;gap:6px;margin-bottom:12px}
+.freq-tab{padding:5px 12px;border-radius:16px;border:1.5px solid var(--border);background:transparent;color:var(--slate);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.freq-tab.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
 </style>
 </head>
 <body>
@@ -318,61 +437,110 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 
   <!-- HOME -->
   <div id="screen-home" class="screen active">
-    <div class="header">
-      <div class="header-row">
+    <div class="dash-header">
+      <div class="dash-top">
         <div>
-          <h1>Budget <span class="sync-dot" id="sync-dot"></span></h1>
-          <div class="sub" id="home-greeting"></div>
+          <h1 style="font-size:20px;font-weight:800">Budget <span class="sync-dot" id="sync-dot"></span></h1>
+          <div style="font-size:12px;color:var(--slate);margin-top:1px" id="home-greeting"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="month-nav">
-            <button class="icon-btn" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <span id="home-month-label"></span>
-            <button class="icon-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <button onclick="toggleNotifSetting()" id="notif-toggle-btn" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:18px;padding:4px" title="Notifications">🔔</button>
-          <button onclick="logout()" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:18px;padding:4px" title="Sign out">⏻</button>
+        <div class="dash-top-right">
+          <button class="dash-icon-btn" onclick="toggleNotifSetting()" id="notif-toggle-btn" title="Notifications">🔔</button>
+          <button class="dash-icon-btn" onclick="showScreen('calc')" title="Calculator">🧮</button>
+          <button class="dash-icon-btn" onclick="logout()" title="Sign out">⏻</button>
+        </div>
+      </div>
+      <div class="dash-month-row">
+        <div style="font-size:13px;color:var(--slate);font-weight:600">Monthly Overview</div>
+        <div class="dash-month-nav">
+          <button class="icon-btn" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span id="home-month-label"></span>
+          <button class="icon-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
         </div>
       </div>
     </div>
+
     <div class="scroll-body">
-      <div class="balance-card">
-        <div class="balance-label">Net Balance</div>
-        <div class="balance-amount" id="home-balance">KES 0</div>
-        <div class="flow-bar-wrap">
-          <div class="flow-bar-i" id="flow-i" style="width:50%"></div>
-          <div class="flow-bar-e" id="flow-e" style="width:50%"></div>
-        </div>
-        <div class="flow-labels"><span>💚 Income</span><span>Expense ❤️</span></div>
-      </div>
-      <div class="tiles">
-        <div class="tile tile-link" onclick="goToFilter('income')" title="View income records">
-          <div class="tile-icon g">💰</div><div class="tile-label">Income</div>
-          <div class="tile-amount green" id="home-income">KES 0</div>
 
+      <!-- Hero Balance -->
+      <div class="hero-card">
+        <div class="hero-label">Net Balance</div>
+        <div class="hero-amount" id="home-balance">KES 0</div>
+        <div class="hero-sub" id="home-balance-sub">—</div>
+        <div class="hero-bars">
+          <div class="hbar-i" id="flow-i" style="width:50%"></div>
+          <div class="hbar-e" id="flow-e" style="width:50%"></div>
         </div>
-        <div class="tile tile-link" onclick="goToFilter('expense')" title="View expense records">
-          <div class="tile-icon r">💸</div><div class="tile-label">Expenses</div>
-          <div class="tile-amount red" id="home-expense">KES 0</div>
-
+        <div class="hero-bar-labels">
+          <span><span class="dot" style="background:var(--green)"></span>Income</span>
+          <span><span class="dot" style="background:var(--red)"></span>Expenses</span>
         </div>
       </div>
-      <div class="tile tile-link" style="background:linear-gradient(135deg,#1a2800,#1C2B3A)" onclick="showScreen('liabilities')" title="View liabilities">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div class="tile-label">Total Liabilities</div>
-            <div class="tile-amount amber" id="home-libs">KES 0</div>
 
-          </div>
-          <span style="font-size:32px">⚖️</span>
+      <!-- Quick Stats — tappable -->
+      <div class="quick-stats">
+        <div class="qs-card income" onclick="goToFilter('income')">
+          <div class="qs-icon">💰</div>
+          <div class="qs-label">Income</div>
+          <div class="qs-value g" id="home-income">KES 0</div>
+        </div>
+        <div class="qs-card expense" onclick="goToFilter('expense')">
+          <div class="qs-icon">💸</div>
+          <div class="qs-label">Expenses</div>
+          <div class="qs-value r" id="home-expense">KES 0</div>
+        </div>
+        <div class="qs-card liability" onclick="showScreen('liabilities')">
+          <div class="qs-icon">⚖️</div>
+          <div class="qs-label">Debts</div>
+          <div class="qs-value a" id="home-libs">KES 0</div>
         </div>
       </div>
-      <div class="section-head">
+
+      <!-- Overspending Alert -->
+      <div id="overspend-alert" style="display:none"></div>
+
+      <!-- Monthly Financial Summary -->
+      <div class="summary-card" id="monthly-summary"></div>
+
+      <!-- Frequent Expense Detection -->
+      <div id="freq-expense-section"></div>
+
+      <!-- Quick Actions -->
+      <div class="sec-head"><h2>Quick Actions</h2></div>
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="showScreen('add');setType('income')">
+          <div class="qa-icon" style="background:var(--green-bg)">💰</div>
+          <div class="qa-text"><div class="qa-title">Add Income</div><div class="qa-sub">Record earnings</div></div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('add');setType('expense')">
+          <div class="qa-icon" style="background:var(--red-bg)">💸</div>
+          <div class="qa-text"><div class="qa-title">Add Expense</div><div class="qa-sub">Record spending</div></div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('add');setType('liability')">
+          <div class="qa-icon" style="background:var(--amber-bg)">⚖️</div>
+          <div class="qa-text"><div class="qa-title">Add Debt</div><div class="qa-sub">Track liability</div></div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('calc')">
+          <div class="qa-icon" style="background:#3D5AFE22">🧮</div>
+          <div class="qa-text"><div class="qa-title">Calculator</div><div class="qa-sub">Interest rates</div></div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('planner')">
+          <div class="qa-icon" style="background:#9C27B022">📅</div>
+          <div class="qa-text"><div class="qa-title">Planner</div><div class="qa-sub">Recurring bills</div></div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('history')">
+          <div class="qa-icon" style="background:#00BCD422">📋</div>
+          <div class="qa-text"><div class="qa-title">History</div><div class="qa-sub">All transactions</div></div>
+        </button>
+      </div>
+
+      <!-- Today's Transactions -->
+      <div class="sec-head">
         <h2>Today's Transactions</h2>
         <button onclick="showScreen('history')">See all</button>
       </div>
       <div class="tx-list" id="home-recent"></div>
     </div>
+
     <button class="fab" onclick="showScreen('add')">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
@@ -505,6 +673,79 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     </div>
   </div>
 
+
+  <!-- INTEREST CALCULATOR -->
+  <div id="screen-calc" class="screen">
+    <div class="header">
+      <div class="header-row">
+        <div><h1>Interest Calculator</h1><div class="sub">Simple &amp; Compound</div></div>
+        <button class="dash-icon-btn" onclick="showScreen('home')">✕</button>
+      </div>
+    </div>
+    <div class="scroll-body" style="gap:16px">
+      <!-- Type -->
+      <div class="calc-type-row">
+        <button class="calc-type-btn active" id="calc-btn-simple" onclick="setCalcType('simple')">Simple Interest</button>
+        <button class="calc-type-btn" id="calc-btn-compound" onclick="setCalcType('compound')">Compound Interest</button>
+      </div>
+      <!-- Inputs -->
+      <div class="form-group">
+        <label class="form-label">Principal Amount (KES)</label>
+        <input id="calc-principal" class="form-input big" type="number" inputmode="decimal" placeholder="100,000" min="0" oninput="calcInterest()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Annual Interest Rate (%)</label>
+        <input id="calc-rate" class="form-input" type="number" inputmode="decimal" placeholder="e.g. 14.5" min="0" max="200" oninput="calcInterest()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time Period (Years)</label>
+        <input id="calc-years" class="form-input" type="number" inputmode="decimal" placeholder="e.g. 2" min="0" oninput="calcInterest()">
+      </div>
+      <div class="form-group" id="calc-freq-group" style="display:none">
+        <label class="form-label">Compounding Frequency</label>
+        <select id="calc-freq" class="form-input" onchange="calcInterest()">
+          <option value="12">Monthly (12×/year)</option>
+          <option value="4">Quarterly (4×/year)</option>
+          <option value="2">Semi-annually (2×/year)</option>
+          <option value="1">Annually (1×/year)</option>
+          <option value="365">Daily (365×/year)</option>
+        </select>
+      </div>
+      <!-- Result -->
+      <div class="calc-result-card" id="calc-result-card" style="display:none">
+        <div class="calc-result-label">Total Interest</div>
+        <div class="calc-result-val" id="calc-interest-val">KES 0</div>
+        <div class="calc-breakdown">
+          <div class="calc-bd-item">
+            <div class="calc-bd-label">Principal</div>
+            <div class="calc-bd-val" id="calc-principal-val" style="color:var(--text)">KES 0</div>
+          </div>
+          <div class="calc-bd-item">
+            <div class="calc-bd-label">Total Payable</div>
+            <div class="calc-bd-val" id="calc-total-val" style="color:var(--amber)">KES 0</div>
+          </div>
+          <div class="calc-bd-item">
+            <div class="calc-bd-label">Monthly Payment</div>
+            <div class="calc-bd-val" id="calc-monthly-val" style="color:var(--indigo2)">KES 0</div>
+          </div>
+          <div class="calc-bd-item">
+            <div class="calc-bd-label">Effective Rate</div>
+            <div class="calc-bd-val" id="calc-eff-rate" style="color:var(--sub)">0%</div>
+          </div>
+        </div>
+      </div>
+      <!-- Amortization table -->
+      <div id="calc-table-wrap" style="display:none">
+        <div class="sec-head" style="margin-bottom:8px"><h2>Year-by-Year Breakdown</h2></div>
+        <div class="summary-card" style="padding:8px;overflow-x:auto">
+          <table class="calc-table" id="calc-table"></table>
+        </div>
+      </div>
+      <!-- Add to liability -->
+      <button class="calc-btn" id="calc-add-btn" style="display:none" onclick="addCalcAsLiability()">+ Add as Liability</button>
+    </div>
+  </div>
+
   <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
@@ -526,6 +767,10 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <button class="nav-item" data-screen="planner" onclick="showScreen('planner')">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Planner</span>
+    </button>
+    <button class="nav-item" data-screen="calc" onclick="showScreen('calc')">
+      <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+      <span>Calc</span>
     </button>
   </nav>
 </div>
@@ -826,6 +1071,7 @@ function showScreen(name) {
   if (name === 'history')     renderHistory();
   if (name === 'liabilities') { renderLibs(); setLibTab(libTab); }
   if (name === 'planner')     renderPlanner();
+  if (name === 'calc')       { document.getElementById('calc-freq-group').style.display='none'; }
   window.scrollTo(0, 0);
 }
 
@@ -853,28 +1099,162 @@ function renderHome() {
   const balance = income - expense;
   const libs    = DB.libs || [];
   const totalLib = libs.reduce((s, l) => s + Math.max(0, l.amount - (l.paid || 0)), 0);
+  const savingsRate = income > 0 ? ((income - expense) / income * 100) : 0;
 
+  // Hero balance
   const bal = document.getElementById('home-balance');
   bal.textContent = 'KES ' + fmt(Math.abs(balance));
-  bal.className   = 'balance-amount ' + (balance >= 0 ? 'pos' : 'neg');
+  bal.className   = 'hero-amount ' + (balance >= 0 ? 'pos' : 'neg');
+  setText('home-balance-sub', balance >= 0
+    ? `Savings rate: ${savingsRate.toFixed(1)}% · ${monthLabel(currentMonth)}`
+    : `Over budget by KES ${fmt(Math.abs(balance))}`);
 
-  setText('home-income', 'KES ' + fmt(income));
+  // Quick stats
+  setText('home-income',  'KES ' + fmt(income));
   setText('home-expense', 'KES ' + fmt(expense));
-  setText('home-libs', 'KES ' + fmt(totalLib));
+  setText('home-libs',    'KES ' + fmt(totalLib));
 
   const tot = income + expense || 1;
   document.getElementById('flow-i').style.width = (income / tot * 100) + '%';
   document.getElementById('flow-e').style.width = (expense / tot * 100) + '%';
 
+  // Greeting
   const hr = new Date().getHours();
-  setText('home-greeting', hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening');
+  setText('home-greeting', hr < 12 ? 'Good morning ☀️' : hr < 17 ? 'Good afternoon 🌤️' : 'Good evening 🌙');
 
-  const today = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0') + '-' + String(new Date().getDate()).padStart(2,'0');
+  // ── Overspending Alert ──────────────────────────────────────
+  renderOverspendAlert(income, expense, balance, savingsRate);
+
+  // ── Monthly Financial Summary ──────────────────────────────
+  renderMonthlySummary(txs, income, expense, balance, savingsRate, totalLib);
+
+  // ── Frequent expense detection ───────────────────────────────
+  renderFrequentExpenses();
+
+  // ── Today's transactions ────────────────────────────────────
+  const n = new Date();
+  const today = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
   const recent = [...txs].filter(t => t.date === today).sort((a, b) => b.date.localeCompare(a.date));
   const el = document.getElementById('home-recent');
   el.innerHTML = '';
   if (!recent.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No transactions today</p></div>'; return; }
   recent.forEach(t => el.appendChild(txCard(t, false)));
+}
+
+function renderOverspendAlert(income, expense, balance, savingsRate) {
+  const el = document.getElementById('overspend-alert');
+  if (!el) return;
+  el.style.display = 'none';
+  el.innerHTML = '';
+  if (income === 0 && expense === 0) return;
+
+  let type = 'ok', icon = '✅', title = '', msg = '';
+  const ratio = income > 0 ? expense / income : 1;
+
+  if (balance < 0) {
+    type = 'danger'; icon = '🚨';
+    title = 'Over Budget!';
+    msg = `You have spent KES ${fmt(Math.abs(balance))} more than you earned this month. Reduce expenses immediately.`;
+  } else if (ratio > 0.9) {
+    type = 'warn'; icon = '⚠️';
+    title = 'Critical Spending';
+    msg = `${(ratio*100).toFixed(0)}% of income spent. Only KES ${fmt(balance)} remaining. Cut non-essential costs.`;
+  } else if (ratio > 0.75) {
+    type = 'warn'; icon = '⚠️';
+    title = 'High Spending Alert';
+    msg = `${(ratio*100).toFixed(0)}% of income spent this month. Target under 70% for healthy savings.`;
+  } else if (savingsRate >= 20) {
+    type = 'ok'; icon = '🎯';
+    title = 'Great Financial Health!';
+    msg = `Saving ${savingsRate.toFixed(1)}% of income. You're on track for your financial goals.`;
+  } else {
+    return; // No alert needed
+  }
+
+  el.style.display = 'flex';
+  el.className = 'alert-banner ' + type;
+  el.innerHTML = `
+    <div class="alert-icon">${icon}</div>
+    <div class="alert-body">
+      <div class="alert-title">${title}</div>
+      <div class="alert-msg">${msg}</div>
+    </div>`;
+}
+
+function renderMonthlySummary(txs, income, expense, balance, savingsRate, totalLib) {
+  const el = document.getElementById('monthly-summary');
+  if (!el) return;
+
+  // Top categories by spend
+  const catMap = {};
+  txs.filter(t => t.type === 'expense').forEach(t => {
+    catMap[t.category] = (catMap[t.category] || 0) + t.amount;
+  });
+  const topCats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const maxCat  = topCats[0]?.[1] || 1;
+
+  // Previous month comparison
+  const [cy, cm] = currentMonth.split('-').map(Number);
+  const pd = new Date(cy, cm-2, 1);
+  const prevMonth = pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0');
+  const prevTxs   = DB.txs.filter(t => t.date?.startsWith(prevMonth));
+  const prevInc   = prevTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const prevExp   = prevTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const incChange = prevInc  > 0 ? ((income  - prevInc)  / prevInc  * 100).toFixed(1) : null;
+  const expChange = prevExp  > 0 ? ((expense - prevExp)  / prevExp  * 100).toFixed(1) : null;
+
+  el.innerHTML = `
+    <h3>📊 Monthly Summary</h3>
+    <div class="summary-row-item">
+      <div class="sri-left">
+        <div class="sri-icon" style="background:var(--green-bg)">💰</div>
+        <div><div class="sri-label">Total Income</div>
+          <div class="sri-sub">${incChange !== null ? (incChange >= 0 ? '▲' : '▼') + ' ' + Math.abs(incChange) + '% vs last month' : 'No prior data'}</div>
+        </div>
+      </div>
+      <div class="sri-right"><div class="sri-val" style="color:var(--green)">KES ${fmt(income)}</div></div>
+    </div>
+    <div class="summary-row-item">
+      <div class="sri-left">
+        <div class="sri-icon" style="background:var(--red-bg)">💸</div>
+        <div><div class="sri-label">Total Expenses</div>
+          <div class="sri-sub">${expChange !== null ? (expChange >= 0 ? '▲' : '▼') + ' ' + Math.abs(expChange) + '% vs last month' : 'No prior data'}</div>
+        </div>
+      </div>
+      <div class="sri-right"><div class="sri-val" style="color:var(--red)">KES ${fmt(expense)}</div></div>
+    </div>
+    <div class="summary-row-item">
+      <div class="sri-left">
+        <div class="sri-icon" style="background:${balance>=0?'var(--green-bg)':'var(--red-bg)'}">📈</div>
+        <div><div class="sri-label">Net Savings</div>
+          <div class="sri-sub">Savings rate: ${savingsRate.toFixed(1)}%</div>
+        </div>
+      </div>
+      <div class="sri-right"><div class="sri-val" style="color:${balance>=0?'var(--green)':'var(--red)'}">KES ${fmt(Math.abs(balance))}</div></div>
+    </div>
+    <div class="summary-row-item">
+      <div class="sri-left">
+        <div class="sri-icon" style="background:var(--amber-bg)">⚖️</div>
+        <div><div class="sri-label">Outstanding Debts</div>
+          <div class="sri-sub">${(DB.libs||[]).filter(l=>(l.paid||0)<l.amount).length} active liabilities</div>
+        </div>
+      </div>
+      <div class="sri-right"><div class="sri-val" style="color:var(--amber)">KES ${fmt(totalLib)}</div></div>
+    </div>
+    ${topCats.length ? `
+    <div style="margin-top:12px">
+      <div style="font-size:11px;font-weight:700;color:var(--slate);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Top Spending Categories</div>
+      ${topCats.map(([cat,amt])=>`
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+            <span style="font-weight:600">${san(cat)}</span>
+            <span style="color:var(--red);font-weight:700">KES ${fmt(amt)}</span>
+          </div>
+          <div class="cat-bar-wrap">
+            <div class="cat-bar" style="width:${(amt/maxCat*100).toFixed(0)}%;background:var(--red)"></div>
+          </div>
+        </div>`).join('')}
+    </div>` : ''}`;
 }
 
 // ── History ────────────────────────────────────────────────────────────────
@@ -1619,6 +1999,231 @@ async function enableNotifications() {
   } else {
     showToast('Notifications blocked — enable in browser settings');
   }
+}
+
+
+
+// ── Frequent Expense Detection ─────────────────────────────────────────────
+let freqView = 'category'; // 'category' | 'note'
+
+function renderFrequentExpenses() {
+  const el = document.getElementById('freq-expense-section');
+  if (!el) return;
+
+  // Analyse ALL expense transactions (not just current month)
+  const allExp = DB.txs.filter(t => t.type === 'expense');
+  if (allExp.length < 2) { el.innerHTML = ''; return; }
+
+  // ── By Category ──────────────────────────────────────────────────────────
+  const catMap = {};
+  allExp.forEach(t => {
+    const key = t.category || 'Other';
+    if (!catMap[key]) catMap[key] = { count:0, total:0, amounts:[], months:new Set(), emoji: t.emoji||'💸' };
+    catMap[key].count++;
+    catMap[key].total += t.amount;
+    catMap[key].amounts.push(t.amount);
+    catMap[key].months.add(t.date?.slice(0,7));
+  });
+
+  // ── By Note (detect recurring named expenses like "Uber", "Spotify") ─────
+  const noteMap = {};
+  allExp.filter(t => t.note && t.note.length > 2).forEach(t => {
+    const key = t.note.trim().toLowerCase();
+    if (!noteMap[key]) noteMap[key] = { count:0, total:0, amounts:[], display: t.note, emoji: t.emoji||'💸', category: t.category };
+    noteMap[key].count++;
+    noteMap[key].total += t.amount;
+    noteMap[key].amounts.push(t.amount);
+  });
+
+  // Sort categories by count * months (frequency across time)
+  const catFreq = Object.entries(catMap)
+    .map(([name, d]) => ({
+      name, emoji: d.emoji,
+      count: d.count,
+      months: d.months.size,
+      total: d.total,
+      avg: d.total / d.count,
+      max: Math.max(...d.amounts),
+      min: Math.min(...d.amounts),
+      score: d.count * d.months.size
+    }))
+    .filter(x => x.count >= 2)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, 6);
+
+  // Sort notes by count
+  const noteFreq = Object.entries(noteMap)
+    .map(([key, d]) => ({
+      name: d.display, emoji: d.emoji, category: d.category,
+      count: d.count, total: d.total,
+      avg: d.total / d.count,
+      score: d.count
+    }))
+    .filter(x => x.count >= 2)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, 6);
+
+  if (catFreq.length === 0 && noteFreq.length === 0) { el.innerHTML = ''; return; }
+
+  // ── Insights ─────────────────────────────────────────────────────────────
+  const topCat  = catFreq[0];
+  const insights = [];
+  if (topCat) {
+    if (topCat.months >= 3)
+      insights.push(`<b>${san(topCat.name)}</b> appears in ${topCat.months} consecutive months — consider budgeting <b>KES ${fmt(topCat.avg)}/month</b> for this.`);
+    if (topCat.max / topCat.min > 2)
+      insights.push(`Your <b>${san(topCat.name)}</b> spending varies widely (KES ${fmt(topCat.min)}–${fmt(topCat.max)}). Review for inconsistencies.`);
+  }
+  const topNote = noteFreq[0];
+  if (topNote && topNote.count >= 3)
+    insights.push(`"<b>${san(topNote.name)}</b>" appears ${topNote.count} times — add it to your <b>Monthly Planner</b> as a recurring bill.`);
+
+  // ── Total recurring spend ─────────────────────────────────────────────────
+  const months3 = new Set(allExp.filter(t => {
+    const d = new Date(t.date); return (new Date() - d) < 90*24*60*60*1000;
+  }).map(t=>t.date?.slice(0,7)));
+  const avgMonthlyExp = months3.size > 0
+    ? allExp.filter(t=>{ const d=new Date(t.date); return (new Date()-d)<90*24*60*60*1000; })
+            .reduce((s,t)=>s+t.amount,0) / Math.max(months3.size,1)
+    : 0;
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  function freqBadge(count, months) {
+    if (count >= 10 || months >= 4) return '<span class="freq-badge high">HIGH FREQ</span>';
+    if (count >= 5  || months >= 2) return '<span class="freq-badge medium">REGULAR</span>';
+    return '<span class="freq-badge low">OCCASIONAL</span>';
+  }
+
+  function renderList(items, byNote) {
+    if (!items.length) return '<div class="empty-state" style="padding:16px 0"><span class="emoji">🔍</span><p style="font-size:13px">Not enough data yet.<br>Add more transactions to detect patterns.</p></div>';
+    return items.map(item => `
+      <div class="freq-item">
+        <div class="freq-icon">${item.emoji}</div>
+        <div class="freq-info">
+          <div class="freq-name">${san(item.name)}</div>
+          <div class="freq-meta">${item.count}× recorded${byNote ? ' · ' + san(item.category) : ' · ' + item.months + ' month(s)'}</div>
+        </div>
+        <div class="freq-right">
+          <div class="freq-total">KES ${fmt(item.total)}</div>
+          <div class="freq-avg">avg KES ${fmt(item.avg)}</div>
+        </div>
+        ${freqBadge(item.count, item.months||0)}
+      </div>`).join('');
+  }
+
+  el.innerHTML = `
+    <div class="freq-card">
+      <h3>🔁 Frequent Expenses</h3>
+      <div class="freq-tabs">
+        <button class="freq-tab ${freqView==='category'?'active':''}" onclick="setFreqView('category')">By Category</button>
+        <button class="freq-tab ${freqView==='note'?'active':''}" onclick="setFreqView('note')">By Description</button>
+      </div>
+      <div id="freq-list">
+        ${freqView==='category' ? renderList(catFreq, false) : renderList(noteFreq, true)}
+      </div>
+      ${avgMonthlyExp > 0 ? `<div style="margin-top:12px;padding:10px;background:var(--card2);border-radius:10px;font-size:12px;color:var(--sub)">
+        📊 Average monthly spending (last 3 months): <b style="color:var(--text)">KES ${fmt(avgMonthlyExp)}</b>
+      </div>` : ''}
+      ${insights.length ? `<div class="freq-insight">💡 ${insights.join('<br><br>')}</div>` : ''}
+    </div>`;
+}
+
+function setFreqView(view) {
+  freqView = view;
+  renderFrequentExpenses();
+}
+
+// ── Interest Calculator ────────────────────────────────────────────────────
+let calcType = 'simple';
+
+function setCalcType(t) {
+  calcType = t;
+  document.getElementById('calc-btn-simple').className   = 'calc-type-btn' + (t==='simple'   ? ' active' : '');
+  document.getElementById('calc-btn-compound').className = 'calc-type-btn' + (t==='compound' ? ' active' : '');
+  document.getElementById('calc-freq-group').style.display = t==='compound' ? 'flex' : 'none';
+  calcInterest();
+}
+
+function calcInterest() {
+  const P = parseFloat(document.getElementById('calc-principal').value) || 0;
+  const r = parseFloat(document.getElementById('calc-rate').value) || 0;
+  const t = parseFloat(document.getElementById('calc-years').value) || 0;
+  const n = parseInt(document.getElementById('calc-freq').value) || 12;
+
+  const resultCard = document.getElementById('calc-result-card');
+  const tableWrap  = document.getElementById('calc-table-wrap');
+  const addBtn     = document.getElementById('calc-add-btn');
+
+  if (!P || !r || !t) { resultCard.style.display='none'; tableWrap.style.display='none'; addBtn.style.display='none'; return; }
+
+  let interest, total, effRate;
+
+  if (calcType === 'simple') {
+    interest = P * (r/100) * t;
+    total    = P + interest;
+    effRate  = r;
+  } else {
+    total    = P * Math.pow(1 + (r/100)/n, n*t);
+    interest = total - P;
+    effRate  = (Math.pow(1 + (r/100)/n, n) - 1) * 100;
+  }
+
+  const monthly = total / (t * 12);
+
+  setText('calc-interest-val',  'KES ' + fmt(interest));
+  setText('calc-principal-val', 'KES ' + fmt(P));
+  setText('calc-total-val',     'KES ' + fmt(total));
+  setText('calc-monthly-val',   'KES ' + fmt(monthly));
+  setText('calc-eff-rate',      effRate.toFixed(2) + '%');
+
+  resultCard.style.display = 'block';
+  addBtn.style.display     = 'block';
+
+  // Build amortization table
+  const table = document.getElementById('calc-table');
+  table.innerHTML = `<thead><tr><th>Year</th><th>Interest</th><th>Balance</th><th>Total Paid</th></tr></thead>`;
+  const tbody = document.createElement('tbody');
+  const years = Math.min(Math.ceil(t), 30);
+  let balance = P, totalPaid = 0;
+
+  for (let y = 1; y <= years; y++) {
+    let yearInterest;
+    if (calcType === 'simple') {
+      yearInterest = P * (r/100);
+    } else {
+      const newBal = P * Math.pow(1 + (r/100)/n, n*y);
+      yearInterest = newBal - balance;
+      balance = newBal;
+    }
+    totalPaid += yearInterest;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>Year ${y}</td><td style="color:var(--red)">KES ${fmt(yearInterest)}</td><td style="color:var(--amber)">KES ${fmt(calcType==='simple' ? P : balance)}</td><td>KES ${fmt(P + totalPaid)}</td>`;
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  tableWrap.style.display = 'block';
+}
+
+function addCalcAsLiability() {
+  const P = parseFloat(document.getElementById('calc-principal').value) || 0;
+  const r = parseFloat(document.getElementById('calc-rate').value) || 0;
+  const t = parseFloat(document.getElementById('calc-years').value) || 0;
+  const n = parseInt(document.getElementById('calc-freq').value) || 12;
+  if (!P || !r || !t) return;
+
+  let total;
+  if (calcType === 'simple') {
+    total = P + P * (r/100) * t;
+  } else {
+    total = P * Math.pow(1 + (r/100)/n, n*t);
+  }
+
+  // Pre-fill liability form
+  setType('liability');
+  document.getElementById('add-amount').value = total.toFixed(2);
+  document.getElementById('lib-name').value   = `Loan @ ${r}% (${calcType})`;
+  showScreen('add');
+  showToast('Loan total pre-filled as liability');
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
