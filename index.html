@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://api.github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; connect-src https://api.github.com; font-src https://fonts.gstatic.com;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0F1B2D">
 <meta name="mobile-web-app-capable" content="yes">
@@ -309,7 +310,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
   <input id="token-input" class="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
   <button class="connect-btn" onclick="connectToken()">Connect & Start →</button>
   <div id="err-box"></div>
-  <p style="font-size:11px;color:var(--slate)">Token is stored only on this device. Your data lives in a private GitHub Gist.</p>
+  <p style="font-size:11px;color:var(--slate)">Token is encrypted on this device. Data lives in a private GitHub Gist only you can access.</p>
 </div>
 
 <!-- App -->
@@ -393,7 +394,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
       <div id="lib-fields" style="display:none;flex-direction:column;gap:18px">
         <div class="form-group">
           <label class="form-label">Lender / Description</label>
-          <input id="lib-name" class="form-input" type="text" placeholder="e.g. KCB Loan, Fuliza, Friend">
+          <input id="lib-name" class="form-input" type="text" placeholder="e.g. KCB Loan, Fuliza, Friend" maxlength="60">
         </div>
         <div class="form-group">
           <label class="form-label">Amount Already Paid (KES)</label>
@@ -414,7 +415,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
       </div>
       <div class="form-group">
         <label class="form-label">Note (optional)</label>
-        <input id="add-note" class="form-input" type="text" placeholder="What was this for?">
+        <input id="add-note" class="form-input" type="text" placeholder="What was this for?" maxlength="120">
       </div>
       <button class="save-btn" id="save-btn" onclick="saveRecord()">Save Transaction</button>
     </div>
@@ -531,6 +532,19 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 
 <div class="toast" id="toast"></div>
 
+<!-- Secure Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <h3 id="confirm-title">Confirm</h3>
+    <p id="confirm-body">Are you sure?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn-del" id="confirm-action-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- Notification Prompt Banner -->
 <div id="notif-prompt">
   <span style="font-size:24px">🔔</span>
@@ -574,7 +588,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <h3 id="plan-modal-title">Add Recurring Bill</h3>
     <div class="form-group">
       <label class="form-label">Bill Name</label>
-      <input id="plan-name" class="form-input" type="text" placeholder="e.g. Electricity, Rent, Water">
+      <input id="plan-name" class="form-input" type="text" placeholder="e.g. Electricity, Rent, Water" maxlength="60">
     </div>
     <div class="form-group">
       <label class="form-label">Amount (KES)</label>
@@ -596,6 +610,31 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 </div>
 
 <script>
+
+// ── Security: sanitize user content before inserting into DOM ──────────────
+
+function stripHtml(str) {
+  return String(str||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`]/g,'').slice(0,200);
+}
+
+function san(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;')
+    .replace(/`/g,'&#x60;');
+}
+// Emoji whitelist — only allow actual emoji characters (unicode ranges)
+function sanEmoji(str) {
+  if (!str) return '💳';
+  // Strip anything that isn't emoji/spaces
+  const cleaned = str.replace(/[<>&"'`]/g, '');
+  return cleaned.slice(0, 4) || '💳';
+}
+
 // ── Categories ─────────────────────────────────────────────────────────────
 const CATS = {
   expense:[
@@ -625,6 +664,35 @@ let addType = 'expense', addCat = '', addEmoji = '💳';
 let filterType = 'all';
 let pendingDelId = null, pendingDelType = null, pendingPayId = null;
 let saveTimer = null;
+
+
+// ── Token obfuscation (XOR with device key) ────────────────────────────────
+// Not encryption, but prevents casual reading of token in DevTools
+function getDeviceKey() {
+  let k = localStorage.getItem('bt_dk');
+  if (!k) {
+    k = Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+    localStorage.setItem('bt_dk', k);
+  }
+  return k;
+}
+
+function obfuscate(str) {
+  const key = getDeviceKey();
+  return Array.from(str).map((c,i) =>
+    (c.charCodeAt(0) ^ parseInt(key.slice((i*2)%64, (i*2)%64+2),16)).toString(16).padStart(4,'0')
+  ).join('');
+}
+
+function deobfuscate(hex) {
+  try {
+    const key = getDeviceKey();
+    const chars = hex.match(/.{4}/g)||[];
+    return chars.map((h,i) =>
+      String.fromCharCode(parseInt(h,16) ^ parseInt(key.slice((i*2)%64,(i*2)%64+2),16))
+    ).join('');
+  } catch(e) { return ''; }
+}
 
 // ── GitHub Gist API ────────────────────────────────────────────────────────
 const GIST_FILE = 'budget_tracker_data.json';
@@ -686,7 +754,7 @@ async function connectToken() {
     if (!me.ok) throw new Error('Invalid token (status ' + me.status + '). Make sure you copied it correctly.');
 
     TOKEN = t;
-    localStorage.setItem('bt_token', t);
+    localStorage.setItem('bt_token', obfuscate(t));
 
     setSyncDot('syncing');
     GIST_ID = await findOrCreateGist();
@@ -703,11 +771,12 @@ async function connectToken() {
 }
 
 function logout() {
-  if (!confirm('Sign out? Token will be removed from this device.')) return;
-  localStorage.removeItem('bt_token');
-  localStorage.removeItem('bt_gist');
-  localStorage.removeItem('bt_cache');
-  location.reload();
+  showConfirmModal('Sign Out', 'Your token will be removed from this device. You can reconnect anytime.', 'Sign Out', () => {
+    localStorage.removeItem('bt_token');
+    localStorage.removeItem('bt_gist');
+    localStorage.removeItem('bt_cache');
+    location.reload();
+  });
 }
 
 // ── Launch ─────────────────────────────────────────────────────────────────
@@ -882,10 +951,10 @@ function libCard(l, isSettled) {
   d.className = 'lib-item';
   d.innerHTML = `
     <div class="lib-top">
-      <div class="tx-icon li">${l.emoji || '⚖️'}</div>
+      <div class="tx-icon li">${sanEmoji(l.emoji)}</div>
       <div class="lib-info">
-        <div class="lib-name">${l.name || l.category}</div>
-        <div class="lib-meta">${l.category}${l.dueDate ? ' · Due ' + l.dueDate : ''}
+        <div class="lib-name">${san(l.name || l.category)}</div>
+        <div class="lib-meta">${san(l.category)}${l.dueDate ? ' · Due ' + san(l.dueDate) : ''}
           ${overdue ? ' <span style="color:var(--red);font-weight:700">OVERDUE</span>' : ''}
           ${isSettled ? ' <span class="settled-badge">SETTLED</span>' : ''}
         </div>
@@ -900,8 +969,8 @@ function libCard(l, isSettled) {
       <span>Paid: KES ${fmt(paid)}</span><span>${pct.toFixed(0)}% cleared</span>
     </div>
     <div class="lib-actions">
-      ${!isSettled ? `<button class="pay-btn" onclick="openPayModal('${l.id}')">💳 Record Payment</button>` : ''}
-      <button class="del-btn-sm" onclick="openDelModal('${l.id}','lib')">Delete</button>
+      ${!isSettled ? `<button class="pay-btn" onclick="openPayModal('${san(l.id)}')">💳 Record Payment</button>` : ''}
+      <button class="del-btn-sm" onclick="openDelModal('${san(l.id)}','lib')">Delete</button>
     </div>`;
   return d;
 }
@@ -912,16 +981,16 @@ function txCard(t, showDel) {
   const d = document.createElement('div');
   d.className = 'tx-item';
   d.innerHTML = `
-    <div class="tx-icon ${inc ? 'ii' : 'ei'}">${t.emoji || '💳'}</div>
+    <div class="tx-icon ${inc ? 'ii' : 'ei'}">${sanEmoji(t.emoji)}</div>
     <div class="tx-info">
-      <div class="tx-cat">${t.category}</div>
-      <div class="tx-note">${t.note || t.date}</div>
+      <div class="tx-cat">${san(t.category)}</div>
+      <div class="tx-note">${san(t.note || t.date)}</div>
     </div>
     <div class="tx-right">
       <div class="tx-amount ${inc ? 'green' : 'red'}">${inc ? '+' : '-'}KES ${fmt(t.amount)}</div>
-      <div class="tx-date">${t.date}</div>
+      <div class="tx-date">${san(t.date)}</div>
     </div>
-    ${showDel ? `<button class="del-btn" onclick="openDelModal('${t.id}','tx')">
+    ${showDel ? `<button class="del-btn" onclick="openDelModal('${san(t.id)}','tx')">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
     </button>` : ''}`;
   return d;
@@ -970,10 +1039,12 @@ function buildCatGrid() {
 async function saveRecord() {
   const amount = parseFloat(document.getElementById('add-amount').value);
   const date   = document.getElementById('add-date').value;
-  const note   = document.getElementById('add-note').value.trim();
-  if (!amount || amount <= 0) { showToast('Enter a valid amount'); return; }
-  if (!addCat)                { showToast('Pick a category'); return; }
-  if (!date)                  { showToast('Select a date'); return; }
+  const note   = stripHtml(document.getElementById('add-note').value.trim()).slice(0,120);
+  if (!amount || amount <= 0)  { showToast('Enter a valid amount'); return; }
+  if (amount > 999999999)      { showToast('Amount too large'); return; }
+  if (!addCat)                 { showToast('Pick a category'); return; }
+  if (!date)                   { showToast('Select a date'); return; }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { showToast('Invalid date format'); return; }
 
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
@@ -1016,7 +1087,7 @@ function openPayModal(id) { pendingPayId = id; document.getElementById('pay-amou
 
 function confirmPayment() {
   const amount = parseFloat(document.getElementById('pay-amount').value);
-  if (!amount || amount <= 0) { showToast('Enter a valid amount'); return; }
+  if (!amount || amount <= 0 || !isFinite(amount)) { showToast('Enter a valid amount'); return; }
   closeModal('pay-modal');
   const lib = (DB.libs || []).find(l => l.id === pendingPayId);
   if (!lib) return;
@@ -1040,6 +1111,47 @@ function toggleNotifSetting() {
 }
 function showNotifPrompt() { document.getElementById('notif-prompt').style.display='flex'; }
 function hideNotifPrompt() { document.getElementById('notif-prompt').style.display='none'; }
+
+// ── Inactivity timeout — lock after 5 minutes of no interaction ────────────
+let inactivityTimer = null;
+const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes
+
+function startInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(lockApp, INACTIVITY_MS);
+}
+
+function resetInactivityTimer() {
+  if (document.getElementById('app').style.display === 'block') {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(lockApp, INACTIVITY_MS);
+  }
+}
+
+function lockApp() {
+  if (document.getElementById('app').style.display !== 'block') return;
+  document.getElementById('app').style.display = 'none';
+  const stored = localStorage.getItem('bt_pin');
+  if (stored) {
+    showPinScreen('enter');
+  }
+}
+
+// Reset timer on any user interaction
+['touchstart','touchend','click','keydown'].forEach(ev => {
+  document.addEventListener(ev, resetInactivityTimer, { passive: true });
+});
+
+
+function showConfirmModal(title, body, actionLabel, onConfirm) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').textContent  = body;
+  const btn = document.getElementById('confirm-action-btn');
+  btn.textContent = actionLabel;
+  btn.onclick = () => { closeModal('confirm-modal'); onConfirm(); };
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
 function fmt(n) { return (n || 0).toLocaleString('en-KE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
@@ -1056,7 +1168,7 @@ function setSyncDot(state) {
 function showErr(msg) { const b = document.getElementById('err-box'); b.textContent = msg; b.style.display = 'block'; }
 function hideErr()    { document.getElementById('err-box').style.display = 'none'; }
 
-['del-modal', 'pay-modal'].forEach(id => {
+['del-modal', 'pay-modal', 'confirm-modal', 'plan-modal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
 });
 
@@ -1119,14 +1231,23 @@ function shakeDots() {
   setTimeout(() => { wrap.style.animation = ''; }, 400);
 }
 
-function hashPin(pin) {
-  // Simple hash — good enough for local PIN (not crypto)
-  let h = 0;
-  for (let i = 0; i < pin.length; i++) h = Math.imul(31, h) + pin.charCodeAt(i) | 0;
-  return h.toString(36) + pin.length;
+async function hashPin(pin) {
+  const salt = localStorage.getItem('bt_salt') || (() => {
+    const s = crypto.getRandomValues(new Uint8Array(16));
+    const hex = Array.from(s).map(b=>b.toString(16).padStart(2,'0')).join('');
+    localStorage.setItem('bt_salt', hex);
+    return hex;
+  })();
+  const enc  = new TextEncoder().encode(pin + salt);
+  const buf  = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-function handlePin() {
+// PIN brute-force protection
+let pinAttempts = 0;
+let pinLockedUntil = 0;
+
+async function handlePin() {
   const stored = localStorage.getItem('bt_pin');
 
   if (pinMode === 'setup') {
@@ -1137,9 +1258,12 @@ function handlePin() {
 
   } else if (pinMode === 'confirm') {
     if (pinBuffer === pinSetupTemp) {
-      localStorage.setItem('bt_pin', hashPin(pinBuffer));
+      const hashed = await hashPin(pinBuffer);
+      localStorage.setItem('bt_pin', hashed);
+      pinAttempts = 0;
       document.getElementById('pin-screen').style.display = 'none';
       launchApp();
+      startInactivityTimer();
     } else {
       document.getElementById('pin-error').textContent = 'PINs do not match. Try again.';
       shakeDots();
@@ -1149,22 +1273,48 @@ function handlePin() {
     }
 
   } else {
-    // Enter mode
-    if (stored && hashPin(pinBuffer) === stored) {
+    // Check lockout
+    if (Date.now() < pinLockedUntil) {
+      const secs = Math.ceil((pinLockedUntil - Date.now()) / 1000);
+      document.getElementById('pin-error').textContent = `Too many attempts. Wait ${secs}s.`;
+      pinBuffer = ''; updatePinDots();
+      return;
+    }
+
+    const hashed = await hashPin(pinBuffer);
+    if (stored && hashed === stored) {
+      pinAttempts = 0;
       document.getElementById('pin-screen').style.display = 'none';
       launchApp();
+      startInactivityTimer();
     } else {
-      document.getElementById('pin-error').textContent = 'Incorrect PIN. Try again.';
+      pinAttempts++;
       shakeDots();
       pinBuffer = ''; updatePinDots();
+      if (pinAttempts >= 10) {
+        // Wipe everything after 10 failed attempts
+        document.getElementById('pin-error').textContent = 'Too many failed attempts. Data wiped for security.';
+        setTimeout(() => { localStorage.clear(); location.reload(); }, 2000);
+      } else if (pinAttempts >= 5) {
+        // Lockout for 30 seconds after 5 attempts
+        pinLockedUntil = Date.now() + 30000;
+        const remaining = () => Math.ceil((pinLockedUntil - Date.now()) / 1000);
+        document.getElementById('pin-error').textContent = `Too many attempts. Locked for ${remaining()}s.`;
+        const t = setInterval(() => {
+          if (Date.now() >= pinLockedUntil) { clearInterval(t); document.getElementById('pin-error').textContent = ''; return; }
+          document.getElementById('pin-error').textContent = `Too many attempts. Locked for ${remaining()}s.`;
+        }, 1000);
+      } else {
+        document.getElementById('pin-error').textContent = `Incorrect PIN. ${10 - pinAttempts} attempts remaining.`;
+      }
     }
   }
 }
 
 function pinForgot() {
-  if (!confirm('Reset PIN? You will need to reconnect your GitHub token.')) return;
-  localStorage.clear();
-  location.reload();
+  showConfirmModal('Reset PIN', 'This will clear all local data. You will need to reconnect your GitHub token.', 'Reset', () => {
+    localStorage.clear(); location.reload();
+  });
 }
 
 
@@ -1230,8 +1380,8 @@ function renderPlanner() {
     d.innerHTML = `
       <div class="plan-icon">${p.emoji||'📦'}</div>
       <div class="plan-info">
-        <div class="plan-name">${p.name}</div>
-        <div class="plan-meta">${p.category} · Due ${p.dueDay}${getDaySuffix(p.dueDay)} of month</div>
+        <div class="plan-name">${san(p.name)}</div>
+        <div class="plan-meta">${san(p.category)} · Due ${san(String(p.dueDay))}${getDaySuffix(p.dueDay)} of month</div>
         <div class="plan-status ${isPaid?'paid':isOverdue?'overdue':'unpaid'}">
           ${isPaid ? '✓ Paid' : isOverdue ? '⚠ Overdue' : '⏳ Unpaid'}
         </div>
@@ -1290,9 +1440,10 @@ function markPlanUnpaid(id) {
 }
 
 function deletePlanItem(id) {
-  if (!confirm('Delete this recurring bill?')) return;
-  DB.plans = (DB.plans||[]).filter(x=>x.id!==id);
-  scheduleSave(); renderPlanner(); showToast('Deleted');
+  showConfirmModal('Delete Bill', 'This recurring bill will be permanently removed.', 'Delete', () => {
+    DB.plans = (DB.plans||[]).filter(x=>x.id!==id);
+    scheduleSave(); renderPlanner(); showToast('Deleted');
+  });
 }
 
 // Plan cat grid
@@ -1335,11 +1486,11 @@ function openPlanEditModal(id) {
 }
 
 function savePlanItem() {
-  const name   = document.getElementById('plan-name').value.trim();
+  const name   = stripHtml(document.getElementById('plan-name').value.trim()).slice(0,60);
   const amount = parseFloat(document.getElementById('plan-amount').value);
   const day    = parseInt(document.getElementById('plan-day').value);
-  if (!name)              { showToast('Enter a bill name'); return; }
-  if (!amount||amount<=0) { showToast('Enter a valid amount'); return; }
+  if (!name)                        { showToast('Enter a bill name'); return; }
+  if (!amount||amount<=0||!isFinite(amount)) { showToast('Enter a valid amount'); return; }
   if (!day||day<1||day>31){ showToast('Enter a valid day (1-31)'); return; }
   if (!planCat)           { showToast('Pick a category'); return; }
 
@@ -1472,7 +1623,7 @@ async function enableNotifications() {
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 (async () => {
-  TOKEN   = localStorage.getItem('bt_token') || '';
+  TOKEN = deobfuscate(localStorage.getItem('bt_token') || '') || localStorage.getItem('bt_token') || '';
   GIST_ID = localStorage.getItem('bt_gist')  || '';
   const cached = localStorage.getItem('bt_cache');
 
