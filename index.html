@@ -208,6 +208,37 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .pin-key.empty{background:transparent;pointer-events:none}
 .pin-error{font-size:13px;color:var(--red);font-weight:600;min-height:18px;text-align:center}
 .pin-forgot{background:none;border:none;color:var(--slate);font-family:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+
+/* Liability tabs */
+.lib-tabs{display:flex;gap:8px;margin-bottom:4px}
+.lib-tab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--slate);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.lib-tab.active-amber{background:var(--amber);border-color:var(--amber);color:#1a1a1a}
+.lib-tab.active-green{background:var(--green);border-color:var(--green);color:#1a1a1a}
+.settled-badge{background:var(--green-bg);border:1px solid var(--green);color:var(--green);border-radius:6px;font-size:11px;font-weight:700;padding:2px 8px;display:inline-block}
+
+/* Planner screen */
+#screen-planner .header{padding:52px 20px 16px}
+.planner-month-nav{display:flex;align-items:center;gap:4px;background:var(--card);border-radius:12px;padding:4px 8px}
+.planner-month-nav span{font-size:13px;font-weight:600;min-width:100px;text-align:center}
+.plan-item{background:var(--card);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.plan-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--indigo)22}
+.plan-info{flex:1;min-width:0}
+.plan-name{font-size:14px;font-weight:600}
+.plan-meta{font-size:12px;color:var(--slate);margin-top:2px}
+.plan-right{text-align:right;flex-shrink:0}
+.plan-amount{font-size:15px;font-weight:700;color:var(--text)}
+.plan-due{font-size:11px;color:var(--slate);margin-top:2px}
+.plan-status{font-size:11px;font-weight:700;margin-top:2px}
+.plan-status.paid{color:var(--green)}
+.plan-status.unpaid{color:var(--amber)}
+.plan-status.overdue{color:var(--red)}
+.plan-actions{display:flex;gap:8px;margin-top:8px}
+.plan-mark-btn{flex:1;background:var(--green-bg);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.plan-edit-btn{background:var(--card2);border:none;color:var(--sub);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.plan-del-btn{background:var(--red-bg);border:none;color:var(--red);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.summary-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:12px;padding:14px 16px;font-size:14px}
+.summary-row span:first-child{color:var(--slate);font-weight:600}
+.summary-row span:last-child{font-weight:800}
 </style>
 </head>
 <body>
@@ -390,20 +421,60 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
       <div class="header-row">
         <div><h1>Liabilities</h1><div class="sub">Loans, debts &amp; credit</div></div>
       </div>
+      <div style="margin-top:12px">
+        <div class="lib-tabs">
+          <button class="lib-tab active-amber" data-lt="active" onclick="setLibTab('active')">Active</button>
+          <button class="lib-tab" data-lt="settled" onclick="setLibTab('settled')">Settled</button>
+        </div>
+      </div>
     </div>
     <div class="scroll-body">
-      <div class="tile" style="background:linear-gradient(135deg,#261800,#1C2B3A)">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div class="tile-label">Total Outstanding</div><div class="tile-amount amber" id="lib-total">KES 0</div></div>
-          <span style="font-size:32px">⚖️</span>
+      <div id="lib-active-section">
+        <div class="tile" style="background:linear-gradient(135deg,#261800,#1C2B3A);margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><div class="tile-label">Total Outstanding</div><div class="tile-amount amber" id="lib-total">KES 0</div></div>
+            <span style="font-size:32px">⚖️</span>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--slate)" id="lib-count">0 active debts</div>
         </div>
-        <div style="margin-top:10px;font-size:12px;color:var(--slate)" id="lib-count">0 liabilities</div>
+        <div class="tx-list" style="margin-top:14px" id="lib-list"></div>
       </div>
-      <div class="tx-list" id="lib-list"></div>
+      <div id="lib-settled-section" style="display:none">
+        <div class="tile" style="background:linear-gradient(135deg,#003020,#1C2B3A);margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><div class="tile-label">Total Settled</div><div class="tile-amount green" id="lib-settled-total">KES 0</div></div>
+            <span style="font-size:32px">✅</span>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--slate)" id="lib-settled-count">0 settled debts</div>
+        </div>
+        <div class="tx-list" style="margin-top:14px" id="lib-settled-list"></div>
+      </div>
     </div>
     <button class="fab" onclick="setType('liability');showScreen('add')">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
+  </div>
+
+  <!-- PLANNER -->
+  <div id="screen-planner" class="screen">
+    <div class="header">
+      <div class="header-row">
+        <div><h1>Monthly Planner</h1><div class="sub">Recurring expenses</div></div>
+        <div class="planner-month-nav">
+          <button class="icon-btn" onclick="changePlanMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span id="plan-month-label"></span>
+          <button class="icon-btn" onclick="changePlanMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-body">
+      <div class="tx-list" id="plan-summary-tiles" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+      <div class="section-head" style="margin-top:4px">
+        <h2>Bills &amp; Recurring</h2>
+        <button onclick="openPlanAddModal()">+ Add</button>
+      </div>
+      <div class="tx-list" id="plan-list"></div>
+    </div>
   </div>
 
   <!-- Bottom Nav -->
@@ -423,6 +494,10 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <button class="nav-item" data-screen="liabilities" onclick="showScreen('liabilities')">
       <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       <span>Debts</span>
+    </button>
+    <button class="nav-item" data-screen="planner" onclick="showScreen('planner')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Planner</span>
     </button>
   </nav>
 </div>
@@ -450,6 +525,33 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('pay-modal')">Cancel</button>
       <button class="btn-pay" onclick="confirmPayment()">Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Planner Add/Edit Modal -->
+<div class="modal-overlay" id="plan-modal">
+  <div class="modal">
+    <h3 id="plan-modal-title">Add Recurring Bill</h3>
+    <div class="form-group">
+      <label class="form-label">Bill Name</label>
+      <input id="plan-name" class="form-input" type="text" placeholder="e.g. Electricity, Rent, Water">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount (KES)</label>
+      <input id="plan-amount" class="form-input" type="number" inputmode="decimal" placeholder="0.00" min="0" step="any">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Due Day of Month</label>
+      <input id="plan-day" class="form-input" type="number" inputmode="numeric" placeholder="e.g. 5 (for 5th of each month)" min="1" max="31">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category / Icon</label>
+      <div class="cat-grid" id="plan-cat-grid"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('plan-modal')">Cancel</button>
+      <button class="btn-pay" id="plan-save-btn" onclick="savePlanItem()">Save</button>
     </div>
   </div>
 </div>
@@ -603,7 +705,8 @@ function showScreen(name) {
   if (name === 'home')        renderHome();
   if (name === 'add')         initAdd();
   if (name === 'history')     renderHistory();
-  if (name === 'liabilities') renderLibs();
+  if (name === 'liabilities') { renderLibs(); setLibTab(libTab); }
+  if (name === 'planner')     renderPlanner();
   window.scrollTo(0, 0);
 }
 
@@ -671,41 +774,80 @@ function renderHistory() {
 function setFilter(f) { filterType = f; renderHistory(); }
 
 // ── Liabilities ────────────────────────────────────────────────────────────
+let libTab = 'active';
+
+function setLibTab(tab) {
+  libTab = tab;
+  document.querySelectorAll('.lib-tab').forEach(b => {
+    b.className = 'lib-tab' + (b.dataset.lt === tab ? (tab === 'active' ? ' active-amber' : ' active-green') : '');
+  });
+  document.getElementById('lib-active-section').style.display  = tab === 'active'  ? 'block' : 'none';
+  document.getElementById('lib-settled-section').style.display = tab === 'settled' ? 'block' : 'none';
+}
+
 function renderLibs() {
-  const libs = [...(DB.libs || [])].sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
-  const outstanding = libs.reduce((s, l) => s + Math.max(0, l.amount - (l.paid || 0)), 0);
+  const all     = [...(DB.libs || [])].sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
+  const active  = all.filter(l => (l.paid || 0) < l.amount);
+  const settled = all.filter(l => (l.paid || 0) >= l.amount);
+
+  // Active summary
+  const outstanding = active.reduce((s, l) => s + Math.max(0, l.amount - (l.paid || 0)), 0);
   setText('lib-total', 'KES ' + fmt(outstanding));
-  setText('lib-count', libs.length + ' active liabilit' + (libs.length === 1 ? 'y' : 'ies'));
+  setText('lib-count', active.length + ' active debt' + (active.length === 1 ? '' : 's'));
+
+  // Settled summary
+  const settledTotal = settled.reduce((s, l) => s + l.amount, 0);
+  setText('lib-settled-total', 'KES ' + fmt(settledTotal));
+  setText('lib-settled-count', settled.length + ' settled debt' + (settled.length === 1 ? '' : 's'));
+
+  // Render active
   const el = document.getElementById('lib-list');
   el.innerHTML = '';
-  if (!libs.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">🎉</span><p>No liabilities recorded</p></div>'; return; }
-  libs.forEach(l => {
-    const paid = l.paid || 0, rem = Math.max(0, l.amount - paid), pct = Math.min(100, paid / l.amount * 100);
-    const overdue = l.dueDate && new Date(l.dueDate) < new Date() && rem > 0;
-    const d = document.createElement('div');
-    d.className = 'lib-item';
-    d.innerHTML = `
-      <div class="lib-top">
-        <div class="tx-icon li">${l.emoji || '⚖️'}</div>
-        <div class="lib-info">
-          <div class="lib-name">${l.name || l.category}</div>
-          <div class="lib-meta">${l.category}${l.dueDate ? ' · Due ' + l.dueDate : ''}${overdue ? ' <span style="color:var(--red)">OVERDUE</span>' : ''}</div>
-        </div>
-        <div class="lib-right">
-          <div class="lib-total">KES ${fmt(rem)}</div>
-          <div class="lib-rem">of ${fmt(l.amount)}</div>
+  if (!active.length) {
+    el.innerHTML = '<div class="empty-state"><span class="emoji">🎉</span><p>No active debts</p></div>';
+  } else {
+    active.forEach(l => el.appendChild(libCard(l, false)));
+  }
+
+  // Render settled
+  const sel = document.getElementById('lib-settled-list');
+  sel.innerHTML = '';
+  if (!settled.length) {
+    sel.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No settled debts yet</p></div>';
+  } else {
+    settled.forEach(l => sel.appendChild(libCard(l, true)));
+  }
+}
+
+function libCard(l, isSettled) {
+  const paid = l.paid || 0, rem = Math.max(0, l.amount - paid), pct = Math.min(100, paid / l.amount * 100);
+  const overdue = !isSettled && l.dueDate && new Date(l.dueDate) < new Date() && rem > 0;
+  const d = document.createElement('div');
+  d.className = 'lib-item';
+  d.innerHTML = `
+    <div class="lib-top">
+      <div class="tx-icon li">${l.emoji || '⚖️'}</div>
+      <div class="lib-info">
+        <div class="lib-name">${l.name || l.category}</div>
+        <div class="lib-meta">${l.category}${l.dueDate ? ' · Due ' + l.dueDate : ''}
+          ${overdue ? ' <span style="color:var(--red);font-weight:700">OVERDUE</span>' : ''}
+          ${isSettled ? ' <span class="settled-badge">SETTLED</span>' : ''}
         </div>
       </div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--slate)">
-        <span>Paid: KES ${fmt(paid)}</span><span>${pct.toFixed(0)}% cleared</span>
+      <div class="lib-right">
+        <div class="lib-total" style="${isSettled ? 'color:var(--green)' : ''}">KES ${fmt(isSettled ? l.amount : rem)}</div>
+        <div class="lib-rem">${isSettled ? 'fully paid' : 'of KES ' + fmt(l.amount)}</div>
       </div>
-      <div class="lib-actions">
-        <button class="pay-btn" onclick="openPayModal('${l.id}')">💳 Record Payment</button>
-        <button class="del-btn-sm" onclick="openDelModal('${l.id}','lib')">Delete</button>
-      </div>`;
-    el.appendChild(d);
-  });
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;${isSettled ? 'background:var(--green)' : ''}"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--slate)">
+      <span>Paid: KES ${fmt(paid)}</span><span>${pct.toFixed(0)}% cleared</span>
+    </div>
+    <div class="lib-actions">
+      ${!isSettled ? `<button class="pay-btn" onclick="openPayModal('${l.id}')">💳 Record Payment</button>` : ''}
+      <button class="del-btn-sm" onclick="openDelModal('${l.id}','lib')">Delete</button>
+    </div>`;
+  return d;
 }
 
 // ── Tx Card ────────────────────────────────────────────────────────────────
@@ -954,6 +1096,195 @@ function pinForgot() {
   if (!confirm('Reset PIN? You will need to reconnect your GitHub token.')) return;
   localStorage.clear();
   location.reload();
+}
+
+
+// ── Planner ────────────────────────────────────────────────────────────────
+const PLAN_CATS = [
+  {e:'💡',l:'Electricity'},{e:'🏠',l:'Rent'},{e:'💧',l:'Water'},
+  {e:'📱',l:'Internet'},{e:'📺',l:'TV/Cable'},{e:'🔥',l:'Gas'},
+  {e:'🏫',l:'School Fees'},{e:'🚗',l:'Insurance'},{e:'💊',l:'Medical'},
+  {e:'🛡️',l:'Security'},{e:'🗑️',l:'Garbage'},{e:'📦',l:'Other'}
+];
+
+let planMonth = (() => { const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'); })();
+let planEditId = null;
+let planCat = '', planEmoji = '📦';
+
+function changePlanMonth(dir) {
+  const [y,m] = planMonth.split('-').map(Number);
+  const d = new Date(y, m-1+dir, 1);
+  planMonth = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  renderPlanner();
+}
+
+function renderPlanner() {
+  setText('plan-month-label', monthLabel(planMonth));
+  const items = DB.plans || [];
+  const [py, pm] = planMonth.split('-').map(Number);
+
+  // For each plan item, check if paid this month
+  const total   = items.reduce((s,p) => s + p.amount, 0);
+  const paidItems   = items.filter(p => (p.payments||[]).some(x => x.startsWith(planMonth)));
+  const unpaidItems = items.filter(p => !(p.payments||[]).some(x => x.startsWith(planMonth)));
+  const paidTotal   = paidItems.reduce((s,p) => s + p.amount, 0);
+  const unpaidTotal = unpaidItems.reduce((s,p) => s + p.amount, 0);
+
+  // Summary tiles
+  const st = document.getElementById('plan-summary-tiles');
+  st.innerHTML = `
+    <div class="tile"><div class="tile-icon g">✅</div><div class="tile-label">Paid</div><div class="tile-amount green">KES ${fmt(paidTotal)}</div></div>
+    <div class="tile"><div class="tile-icon a">⏳</div><div class="tile-label">Unpaid</div><div class="tile-amount amber">KES ${fmt(unpaidTotal)}</div></div>`;
+
+  const el = document.getElementById('plan-list');
+  el.innerHTML = '';
+  if (!items.length) {
+    el.innerHTML = '<div class="empty-state"><span class="emoji">🗓️</span><p>No recurring bills added yet.<br>Tap + Add to get started.</p></div>';
+    return;
+  }
+
+  // Sort: unpaid first, then by due day
+  const sorted = [...items].sort((a,b) => {
+    const ap = (a.payments||[]).some(x=>x.startsWith(planMonth));
+    const bp = (b.payments||[]).some(x=>x.startsWith(planMonth));
+    if (ap !== bp) return ap ? 1 : -1;
+    return (a.dueDay||1) - (b.dueDay||1);
+  });
+
+  sorted.forEach(p => {
+    const isPaid = (p.payments||[]).some(x => x.startsWith(planMonth));
+    const dueDate = planMonth + '-' + String(p.dueDay||1).padStart(2,'0');
+    const isOverdue = !isPaid && new Date(dueDate) < new Date();
+    const d = document.createElement('div');
+    d.className = 'plan-item';
+    d.style.cssText = isPaid ? 'opacity:.6' : '';
+    d.innerHTML = `
+      <div class="plan-icon">${p.emoji||'📦'}</div>
+      <div class="plan-info">
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-meta">${p.category} · Due ${p.dueDay}${getDaySuffix(p.dueDay)} of month</div>
+        <div class="plan-status ${isPaid?'paid':isOverdue?'overdue':'unpaid'}">
+          ${isPaid ? '✓ Paid' : isOverdue ? '⚠ Overdue' : '⏳ Unpaid'}
+        </div>
+      </div>
+      <div class="plan-right">
+        <div class="plan-amount">KES ${fmt(p.amount)}</div>
+        <div class="plan-due">Due ${dueDate}</div>
+      </div>`;
+    // Actions row
+    const acts = document.createElement('div');
+    acts.style.cssText = 'display:flex;gap:8px;margin-top:8px;width:100%';
+    if (!isPaid) {
+      const mb = document.createElement('button');
+      mb.className = 'plan-mark-btn'; mb.textContent = '✓ Mark as Paid';
+      mb.onclick = () => markPlanPaid(p.id);
+      acts.appendChild(mb);
+    } else {
+      const ub = document.createElement('button');
+      ub.className = 'plan-edit-btn'; ub.textContent = '↩ Mark Unpaid';
+      ub.onclick = () => markPlanUnpaid(p.id);
+      acts.appendChild(ub);
+    }
+    const eb = document.createElement('button');
+    eb.className = 'plan-edit-btn'; eb.textContent = '✏️';
+    eb.onclick = () => openPlanEditModal(p.id);
+    acts.appendChild(eb);
+    const db2 = document.createElement('button');
+    db2.className = 'plan-del-btn'; db2.textContent = '🗑';
+    db2.onclick = () => deletePlanItem(p.id);
+    acts.appendChild(db2);
+    d.appendChild(acts);
+    el.appendChild(d);
+  });
+}
+
+function getDaySuffix(d) {
+  if (d>=11&&d<=13) return 'th';
+  return ['th','st','nd','rd','th'][Math.min(d%10,4)];
+}
+
+function markPlanPaid(id) {
+  const p = (DB.plans||[]).find(x=>x.id===id);
+  if (!p) return;
+  p.payments = p.payments||[];
+  const today = new Date();
+  const dateStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  if (!p.payments.includes(dateStr)) p.payments.push(dateStr);
+  scheduleSave(); renderPlanner(); showToast('Marked as paid ✓');
+}
+
+function markPlanUnpaid(id) {
+  const p = (DB.plans||[]).find(x=>x.id===id);
+  if (!p) return;
+  p.payments = (p.payments||[]).filter(x => !x.startsWith(planMonth));
+  scheduleSave(); renderPlanner(); showToast('Marked as unpaid');
+}
+
+function deletePlanItem(id) {
+  if (!confirm('Delete this recurring bill?')) return;
+  DB.plans = (DB.plans||[]).filter(x=>x.id!==id);
+  scheduleSave(); renderPlanner(); showToast('Deleted');
+}
+
+// Plan cat grid
+function buildPlanCatGrid() {
+  const grid = document.getElementById('plan-cat-grid');
+  grid.innerHTML = '';
+  PLAN_CATS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cat-chip' + (planCat===c.l ? ' se' : '');
+    el.innerHTML = `<span class="ce">${c.e}</span>${c.l}`;
+    el.onclick = () => {
+      planCat=c.l; planEmoji=c.e;
+      document.querySelectorAll('#plan-cat-grid .cat-chip').forEach(x=>x.classList.remove('se','si','sl'));
+      el.classList.add('se');
+    };
+    grid.appendChild(el);
+  });
+}
+
+function openPlanAddModal() {
+  planEditId=null; planCat=''; planEmoji='📦';
+  document.getElementById('plan-name').value='';
+  document.getElementById('plan-amount').value='';
+  document.getElementById('plan-day').value='';
+  setText('plan-modal-title','Add Recurring Bill');
+  buildPlanCatGrid();
+  document.getElementById('plan-modal').classList.add('open');
+}
+
+function openPlanEditModal(id) {
+  const p = (DB.plans||[]).find(x=>x.id===id);
+  if (!p) return;
+  planEditId=id; planCat=p.category; planEmoji=p.emoji||'📦';
+  document.getElementById('plan-name').value=p.name||'';
+  document.getElementById('plan-amount').value=p.amount||'';
+  document.getElementById('plan-day').value=p.dueDay||'';
+  setText('plan-modal-title','Edit Recurring Bill');
+  buildPlanCatGrid();
+  document.getElementById('plan-modal').classList.add('open');
+}
+
+function savePlanItem() {
+  const name   = document.getElementById('plan-name').value.trim();
+  const amount = parseFloat(document.getElementById('plan-amount').value);
+  const day    = parseInt(document.getElementById('plan-day').value);
+  if (!name)              { showToast('Enter a bill name'); return; }
+  if (!amount||amount<=0) { showToast('Enter a valid amount'); return; }
+  if (!day||day<1||day>31){ showToast('Enter a valid day (1-31)'); return; }
+  if (!planCat)           { showToast('Pick a category'); return; }
+
+  DB.plans = DB.plans||[];
+  if (planEditId) {
+    const p = DB.plans.find(x=>x.id===planEditId);
+    if (p) { p.name=name; p.amount=amount; p.dueDay=day; p.category=planCat; p.emoji=planEmoji; }
+  } else {
+    DB.plans.push({ id:Date.now().toString(), name, amount, dueDay:day, category:planCat, emoji:planEmoji, payments:[] });
+  }
+  scheduleSave();
+  closeModal('plan-modal');
+  renderPlanner();
+  showToast(planEditId ? 'Updated ✓' : 'Bill added ✓');
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
