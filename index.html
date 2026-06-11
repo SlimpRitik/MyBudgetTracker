@@ -403,6 +403,89 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 .qa-sub{display:none}
 /* Hero card tap hint */
 .hero-card{cursor:default}
+
+/* ── Budget Limits ──────────────────────────────────────── */
+#screen-budgets .header{padding:52px 20px 16px;background:linear-gradient(180deg,#162236 0%,var(--bg) 100%);position:sticky;top:0;z-index:10}
+.budget-item{background:var(--card);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.budget-item-top{display:flex;align-items:center;gap:12px}
+.budget-item-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.budget-item-info{flex:1;min-width:0}
+.budget-item-name{font-size:14px;font-weight:700}
+.budget-item-meta{font-size:12px;color:var(--slate);margin-top:2px}
+.budget-item-right{text-align:right;flex-shrink:0}
+.budget-spent{font-size:15px;font-weight:800}
+.budget-limit{font-size:11px;color:var(--slate);margin-top:2px}
+.budget-bar-track{height:8px;background:var(--border);border-radius:6px;overflow:hidden}
+.budget-bar-fill{height:100%;border-radius:6px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.budget-bar-fill.ok    {background:var(--green)}
+.budget-bar-fill.warn  {background:var(--amber)}
+.budget-bar-fill.over  {background:var(--red)}
+.budget-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--slate)}
+.budget-status-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px}
+.budget-status-badge.ok   {background:var(--green-bg);color:var(--green)}
+.budget-status-badge.warn {background:var(--amber-bg);color:var(--amber)}
+.budget-status-badge.over {background:var(--red-bg);color:var(--red)}
+.budget-status-badge.none {background:var(--card2);color:var(--slate)}
+.budget-edit-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-family:inherit;font-size:12px;color:var(--sub);cursor:pointer;transition:border-color .15s}
+.budget-edit-btn:active{border-color:var(--indigo);color:var(--text)}
+.budget-summary-card{background:linear-gradient(135deg,#1a2f00,#1C2B3A);border:1px solid #2a4a00;border-radius:16px;padding:18px}
+.budget-summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.bsg-item{text-align:center}
+.bsg-val{font-size:16px;font-weight:800}
+.bsg-label{font-size:10px;color:var(--slate);margin-top:3px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+/* In-dashboard budget preview card */
+.dash-budget-card{background:var(--card);border-radius:16px;padding:16px}
+.dash-budget-card h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.dash-budget-card h3 button{background:none;border:none;color:var(--indigo2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.dbc-row{margin-bottom:10px}
+.dbc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.dbc-name{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.dbc-pct{font-size:11px;font-weight:700}
+.dbc-pct.ok  {color:var(--green)}
+.dbc-pct.warn{color:var(--amber)}
+.dbc-pct.over{color:var(--red)}
+
+
+/* stat-mini (used in goals/summary cards) */
+.stat-mini{background:var(--card2);border-radius:var(--border-radius,10px);padding:10px;text-align:center}
+.stat-mini .sv{font-size:16px;font-weight:800;color:var(--text)}
+.stat-mini .sl{font-size:11px;color:var(--slate);margin-top:3px;font-weight:600}
+/* ── Savings Goals ──────────────────────────────────────── */
+#screen-goals .header{padding:52px 20px 16px;background:linear-gradient(180deg,#162236 0%,var(--bg) 100%);position:sticky;top:0;z-index:10}
+.goal-card{background:var(--card);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.goal-card-top{display:flex;align-items:center;gap:14px}
+.goal-ring-svg{flex-shrink:0}
+.goal-info{flex:1;min-width:0}
+.goal-name{font-size:15px;font-weight:800;margin-bottom:2px}
+.goal-target{font-size:12px;color:var(--slate)}
+.goal-saved{font-size:20px;font-weight:800}
+.goal-saved span{font-size:13px;font-weight:600;color:var(--slate)}
+.goal-meta-row{display:flex;gap:8px;flex-wrap:wrap}
+.goal-chip{background:var(--card2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--sub)}
+.goal-chip.green{background:var(--green-bg);color:var(--green)}
+.goal-chip.amber{background:var(--amber-bg);color:var(--amber)}
+.goal-chip.red{background:var(--red-bg);color:var(--red)}
+.goal-actions{display:flex;gap:8px}
+.goal-contribute-btn{flex:1;background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.goal-contribute-btn:active{opacity:.85}
+.goal-withdraw-btn{background:var(--card2);border:none;color:var(--sub);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.goal-edit-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;color:var(--sub);cursor:pointer}
+/* History inside goal */
+.goal-history{display:flex;flex-direction:column;gap:4px;max-height:120px;overflow-y:auto}
+.goal-hist-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:0.5px solid var(--border)}
+.goal-hist-row:last-child{border-bottom:none}
+/* Dashboard preview */
+.dash-goals-card{background:var(--card);border-radius:16px;padding:16px}
+.dash-goals-card h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.dash-goals-card h3 button{background:none;border:none;color:var(--indigo2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.dgc-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.dgc-row:last-child{border-bottom:none}
+.dgc-info{flex:1;min-width:0}
+.dgc-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dgc-sub{font-size:11px;color:var(--slate);margin-top:2px}
+.dgc-pct{font-size:13px;font-weight:800;color:var(--indigo2);flex-shrink:0}
+/* Goals summary banner */
+.goals-summary{background:linear-gradient(135deg,#0a2010,#1C2B3A);border:1px solid #1a4020;border-radius:16px;padding:18px;margin-bottom:0}
 </style>
 </head>
 <body>
@@ -459,7 +542,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
   <input id="token-input" class="token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
   <button class="connect-btn" onclick="connectToken()">Connect & Start →</button>
   <div id="err-box"></div>
-  <p style="font-size:11px;color:var(--slate)">Token is encrypted on this device. Data lives in a private GitHub Gist only you can access.</p>
+  <p style="font-size:11px;color:var(--slate)">Token &amp; local data encrypted with AES-256. Cloud data in your private GitHub Gist.</p>
 </div>
 
 <!-- App -->
@@ -532,6 +615,13 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
       <div class="summary-card" id="monthly-summary"></div>
 
       <div class="sec-divider"></div>
+      <!-- Savings Goals Preview -->
+      <div id="dash-goals-preview"></div>
+
+      <!-- Budget Limits Preview -->
+      <div id="dash-budget-preview"></div>
+
+      <div class="sec-divider"></div>
       <!-- Frequent Expense Detection -->
       <div id="freq-expense-section"></div>
 
@@ -564,6 +654,14 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
         <button class="qa-btn" onclick="showScreen('calc')">
           <div class="qa-icon" style="background:#3D5AFE22">🧮</div>
           <div class="qa-title">Calculator</div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('budgets')">
+          <div class="qa-icon" style="background:#00C89622">🎯</div>
+          <div class="qa-title">Budgets</div>
+        </button>
+        <button class="qa-btn" onclick="showScreen('goals')">
+          <div class="qa-icon" style="background:#FFD70022">🏆</div>
+          <div class="qa-title">Goals</div>
         </button>
       </div>
 
@@ -781,6 +879,57 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
     </div>
   </div>
 
+
+
+  <!-- SAVINGS GOALS -->
+  <div id="screen-goals" class="screen">
+    <div class="header">
+      <div class="header-row">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="dash-icon-btn" onclick="showScreen('home')" style="font-size:16px">←</button>
+          <div><h1>Savings Goals</h1><div class="sub">Track your targets</div></div>
+        </div>
+        <button class="dash-icon-btn" onclick="openGoalAddModal()" style="font-size:20px;width:38px;height:38px;background:var(--indigo);color:#fff">+</button>
+      </div>
+    </div>
+    <div class="scroll-body">
+      <div id="goals-summary-wrap"></div>
+      <div class="sec-head" style="margin-top:4px">
+        <h2>My Goals</h2>
+        <button onclick="openGoalAddModal()">+ New Goal</button>
+      </div>
+      <div id="goals-list" class="tx-list"></div>
+    </div>
+  </div>
+
+  <!-- BUDGET LIMITS -->
+  <div id="screen-budgets" class="screen">
+    <div class="header">
+      <div class="header-row">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="dash-icon-btn" onclick="showScreen('home')" style="font-size:16px">←</button>
+          <div>
+            <h1>Budget Limits</h1>
+            <div class="sub" id="budget-month-label">June 2026</div>
+          </div>
+        </div>
+        <div class="dash-month-nav">
+          <button class="icon-btn" onclick="changeBudgetMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span id="budget-nav-month"></span>
+          <button class="icon-btn" onclick="changeBudgetMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-body">
+      <div id="budget-summary-wrap"></div>
+      <div class="sec-head">
+        <h2>Category Budgets</h2>
+        <button onclick="openBudgetSetModal()">+ Set Budget</button>
+      </div>
+      <div id="budget-list" class="tx-list"></div>
+    </div>
+  </div>
+
   <!-- Bottom Nav (4 primary + More tray) -->
   <nav class="bottom-nav">
     <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
@@ -815,8 +964,17 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
       <button class="more-tray-item" onclick="closeMoreTray();showScreen('calc')">
         <span class="mti-icon">🧮</span><span class="mti-label">Calc</span>
       </button>
+      <button class="more-tray-item" onclick="closeMoreTray();showScreen('budgets')">
+        <span class="mti-icon">🎯</span><span class="mti-label">Budgets</span>
+      </button>
+      <button class="more-tray-item" onclick="closeMoreTray();showScreen('goals')">
+        <span class="mti-icon">🏆</span><span class="mti-label">Goals</span>
+      </button>
       <button class="more-tray-item" onclick="closeMoreTray();toggleNotifSetting()">
         <span class="mti-icon">🔔</span><span class="mti-label">Alerts</span>
+      </button>
+      <button class="more-tray-item" onclick="closeMoreTray();showDataProtectionModal()">
+        <span class="mti-icon">🔐</span><span class="mti-label">Security</span>
       </button>
     </div>
     <div style="height:8px"></div>
@@ -824,6 +982,129 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);c
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Data Protection Modal -->
+<div class="modal-overlay" id="dp-modal">
+  <div class="modal" style="gap:10px;max-height:85vh;overflow-y:auto">
+    <h3>🔐 Data Protection</h3>
+    <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:10px;padding:12px;font-size:12px;color:var(--sub);line-height:1.6">
+      <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ Current protections active</div>
+      <div>• Local data encrypted with <b style="color:var(--text)">AES-256-GCM</b></div>
+      <div>• GitHub token <b style="color:var(--text)">XOR-obfuscated</b> in storage</div>
+      <div>• PIN hashed with <b style="color:var(--text)">SHA-256 + salt</b></div>
+      <div>• Auto-lock after <b style="color:var(--text)">5 minutes</b> idle</div>
+      <div>• <b style="color:var(--text)">Content Security Policy</b> blocks injections</div>
+      <div>• All inputs <b style="color:var(--text)">sanitized</b> before storage</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button onclick="exportDataJSON()" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;text-align:left">
+        📥 Export all data (JSON backup)
+      </button>
+      <button onclick="changePinFlow()" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;text-align:left">
+        🔑 Change PIN
+      </button>
+      <button onclick="clearCacheOnly()" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;text-align:left">
+        🗑️ Clear local cache (keeps cloud data)
+      </button>
+      <button onclick="wipeAllData()" style="background:var(--red-bg);border:1px solid var(--red);border-radius:10px;padding:12px;font-family:inherit;font-size:13px;font-weight:700;color:var(--red);cursor:pointer;text-align:left">
+        ⚠️ Wipe all data from this device
+      </button>
+    </div>
+    <button class="btn-cancel" style="margin-top:4px" onclick="closeModal('dp-modal')">Close</button>
+  </div>
+</div>
+
+
+<!-- Goal Add/Edit Modal -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal">
+    <h3 id="goal-modal-title">New Savings Goal</h3>
+    <div class="form-group">
+      <label class="form-label">Goal Name</label>
+      <input id="goal-name" class="form-input" type="text" placeholder="e.g. Emergency Fund, Holiday, Laptop" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Target Amount (KES)</label>
+      <input id="goal-target" class="form-input big" type="number" inputmode="decimal" placeholder="e.g. 100,000" min="1" step="any">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Starting Amount (KES) — optional</label>
+      <input id="goal-initial" class="form-input" type="number" inputmode="decimal" placeholder="Already saved?" min="0" step="any">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Target Date — optional</label>
+      <input id="goal-deadline" class="form-input" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Icon</label>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px" id="goal-icon-grid"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('goal-modal')">Cancel</button>
+      <button class="save-btn" style="flex:1;padding:14px;border-radius:12px;font-size:15px" onclick="saveGoal()">Save Goal</button>
+    </div>
+    <button id="goal-delete-btn" style="display:none;background:none;border:none;color:var(--red);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:6px;width:100%;text-align:center;margin-top:4px" onclick="deleteGoal()">Delete this goal</button>
+  </div>
+</div>
+
+<!-- Goal Contribute Modal -->
+<div class="modal-overlay" id="goal-contribute-modal">
+  <div class="modal">
+    <h3 id="gc-modal-title">Add to Goal</h3>
+    <p id="gc-modal-sub" style="color:var(--sub);font-size:14px"></p>
+    <div class="form-group">
+      <label class="form-label">Amount (KES)</label>
+      <input id="gc-amount" class="form-input big" type="number" inputmode="decimal" placeholder="0.00" min="0" step="any">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note — optional</label>
+      <input id="gc-note" class="form-input" type="text" placeholder="e.g. Monthly deposit" maxlength="60">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('goal-contribute-modal')">Cancel</button>
+      <button class="btn-pay" onclick="confirmContribute()">Add Savings</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Withdraw Modal -->
+<div class="modal-overlay" id="goal-withdraw-modal">
+  <div class="modal">
+    <h3>Withdraw from Goal</h3>
+    <p id="gw-modal-sub" style="color:var(--sub);font-size:14px"></p>
+    <div class="form-group">
+      <label class="form-label">Amount to Withdraw (KES)</label>
+      <input id="gw-amount" class="form-input big" type="number" inputmode="decimal" placeholder="0.00" min="0" step="any">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('goal-withdraw-modal')">Cancel</button>
+      <button class="btn-del" onclick="confirmWithdraw()">Withdraw</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Budget Set Modal -->
+<div class="modal-overlay" id="budget-modal">
+  <div class="modal">
+    <h3 id="budget-modal-title">Set Budget Limit</h3>
+    <p id="budget-modal-sub">Choose a category and monthly spending cap</p>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <div class="cat-grid" id="budget-cat-grid"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Monthly Limit (KES)</label>
+      <input id="budget-limit-input" class="form-input big" type="number" inputmode="decimal" placeholder="e.g. 10,000" min="1" step="any" maxlength="12">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('budget-modal')">Cancel</button>
+      <button class="save-btn" style="flex:1;padding:14px;border-radius:12px;font-size:15px" onclick="saveBudgetLimit()">Save Limit</button>
+    </div>
+    <button id="budget-delete-btn" style="display:none;background:none;border:none;color:var(--red);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:4px;width:100%;text-align:center" onclick="deleteBudgetLimit()">Remove this limit</button>
+  </div>
+</div>
+
 
 <!-- Secure Confirm Modal -->
 <div class="modal-overlay" id="confirm-modal">
@@ -951,7 +1232,7 @@ const CATS = {
 // ── State ──────────────────────────────────────────────────────────────────
 let TOKEN   = '';
 let GIST_ID = '';
-let DB      = { txs: [], libs: [] };
+let DB      = { txs: [], libs: [], goals: [], plans: [], budgets: {} };
 const _now = new Date(); let currentMonth = _now.getFullYear() + '-' + String(_now.getMonth()+1).padStart(2,'0');
 let addType = 'expense', addCat = '', addEmoji = '💳';
 let filterType = 'all';
@@ -990,6 +1271,51 @@ function deobfuscate(hex) {
 // ── GitHub Gist API ────────────────────────────────────────────────────────
 const GIST_FILE = 'budget_tracker_data.json';
 
+function validateDB(raw) {
+  // Schema validation — ensures data integrity before use
+  if (!raw || typeof raw !== 'object') return null;
+  const db = {};
+  // txs: array of transaction objects
+  db.txs = Array.isArray(raw.txs) ? raw.txs.filter(t =>
+    t && typeof t === 'object' &&
+    typeof t.id === 'string' &&
+    ['income','expense'].includes(t.type) &&
+    typeof t.amount === 'number' && isFinite(t.amount) && t.amount > 0 &&
+    typeof t.category === 'string' &&
+    typeof t.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(t.date)
+  ) : [];
+  // libs: array of liability objects
+  db.libs = Array.isArray(raw.libs) ? raw.libs.filter(l =>
+    l && typeof l === 'object' &&
+    typeof l.id === 'string' &&
+    typeof l.amount === 'number' && isFinite(l.amount) && l.amount > 0
+  ) : [];
+  // goals: array of goal objects
+  db.goals = Array.isArray(raw.goals) ? raw.goals.filter(g =>
+    g && typeof g === 'object' &&
+    typeof g.id === 'string' &&
+    typeof g.name === 'string' && g.name.length > 0 &&
+    typeof g.target === 'number' && isFinite(g.target) && g.target > 0 &&
+    typeof g.saved === 'number' && isFinite(g.saved)
+  ) : [];
+  // plans: array of planner items
+  db.plans = Array.isArray(raw.plans) ? raw.plans.filter(p =>
+    p && typeof p === 'object' &&
+    typeof p.id === 'string' &&
+    typeof p.name === 'string' &&
+    typeof p.amount === 'number' && isFinite(p.amount)
+  ) : [];
+  // budgets: object of {category: limit}
+  if (raw.budgets && typeof raw.budgets === 'object' && !Array.isArray(raw.budgets)) {
+    db.budgets = {};
+    Object.entries(raw.budgets).forEach(([k,v]) => {
+      if (typeof k === 'string' && typeof v === 'number' && isFinite(v) && v > 0)
+        db.budgets[k] = v;
+    });
+  } else { db.budgets = {}; }
+  return db;
+}
+
 async function gistGet() {
   const r = await fetch('https://api.github.com/gists/' + GIST_ID, {
     headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json' }
@@ -997,7 +1323,12 @@ async function gistGet() {
   if (!r.ok) throw new Error('Fetch failed: ' + r.status);
   const data = await r.json();
   const content = data.files[GIST_FILE]?.content;
-  return content ? JSON.parse(content) : { txs: [], libs: [] };
+  if (!content) return { txs:[], libs:[], goals:[], plans:[], budgets:{} };
+  let raw;
+  try { raw = JSON.parse(content); } catch(e) { throw new Error('Data corrupted — could not parse'); }
+  const validated = validateDB(raw);
+  if (!validated) throw new Error('Data failed schema validation');
+  return validated;
 }
 
 async function gistPut(db) {
@@ -1054,7 +1385,7 @@ async function connectToken() {
     localStorage.setItem('bt_gist', GIST_ID);
 
     DB = await gistGet();
-    localStorage.setItem('bt_cache', JSON.stringify(DB));
+    encryptCache(DB).then(enc => { if(enc) localStorage.setItem('bt_cache_enc', enc); });
 
     launchApp();
   } catch(e) {
@@ -1094,8 +1425,51 @@ function launchApp() {
 }
 
 // ── Persist (debounced) ───────────────────────────────────────────────────
+// ── AES-GCM cache encryption ──────────────────────────────────────────────
+async function getCacheKey() {
+  // Derive a device-bound AES key from the device key using PBKDF2
+  const dk   = getDeviceKey();
+  const raw  = new TextEncoder().encode(dk);
+  const base = await crypto.subtle.importKey('raw', raw, 'PBKDF2', false, ['deriveKey']);
+  const salt = new TextEncoder().encode('bt_cache_v1_salt');
+  return crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:100000, hash:'SHA-256' },
+    base,
+    { name:'AES-GCM', length:256 },
+    false, ['encrypt','decrypt']
+  );
+}
+
+async function encryptCache(data) {
+  try {
+    const key  = await getCacheKey();
+    const iv   = crypto.getRandomValues(new Uint8Array(12));
+    const enc  = new TextEncoder().encode(JSON.stringify(data));
+    const ct   = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, enc);
+    const buf  = new Uint8Array(iv.length + ct.byteLength);
+    buf.set(iv, 0); buf.set(new Uint8Array(ct), iv.length);
+    return btoa(String.fromCharCode(...buf));
+  } catch(e) { return null; }
+}
+
+async function decryptCache(b64) {
+  try {
+    const key  = await getCacheKey();
+    const buf  = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
+    const iv   = buf.slice(0, 12);
+    const ct   = buf.slice(12);
+    const pt   = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(pt));
+  } catch(e) { return null; }
+}
+
 function scheduleSave() {
-  localStorage.setItem('bt_cache', JSON.stringify(DB)); // instant local
+  // Save encrypted cache asynchronously
+  encryptCache(DB).then(enc => {
+    if (enc) localStorage.setItem('bt_cache_enc', enc);
+    // Remove old plaintext cache if it exists
+    localStorage.removeItem('bt_cache');
+  });
   setSyncDot('syncing');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
@@ -1111,7 +1485,7 @@ function scheduleSave() {
 
 
 // ── More Tray ───────────────────────────────────────────────────────────────
-const TRAY_SCREENS = ['liabilities','planner','calc'];
+const TRAY_SCREENS = ['liabilities','planner','calc','budgets','goals'];
 function toggleMoreTray() {
   const tray    = document.getElementById('more-tray');
   const overlay = document.getElementById('more-tray-overlay');
@@ -1148,6 +1522,8 @@ function showScreen(name) {
   if (name === 'liabilities') { renderLibs(); setLibTab(libTab); }
   if (name === 'planner')     renderPlanner();
   if (name === 'calc')        { const fg = document.getElementById('calc-freq-group'); if(fg) fg.style.display='none'; }
+  if (name === 'budgets')     { renderBudgets(); }
+  if (name === 'goals')       { renderGoals(); }
   window.scrollTo(0, 0);
 }
 
@@ -1204,6 +1580,12 @@ function renderHome() {
 
   // ── Monthly Financial Summary ──────────────────────────────
   renderMonthlySummary(txs, income, expense, balance, savingsRate, totalLib);
+
+  // ── Goals preview ──────────────────────────────────────────────
+  renderDashGoalsPreview();
+
+  // ── Budget preview ─────────────────────────────────────────────
+  renderDashBudgetPreview();
 
   // ── Frequent expense detection ───────────────────────────────
   renderFrequentExpenses();
@@ -1625,7 +2007,7 @@ function setSyncDot(state) {
 function showErr(msg) { const b = document.getElementById('err-box'); b.textContent = msg; b.style.display = 'block'; }
 function hideErr()    { document.getElementById('err-box').style.display = 'none'; }
 
-['del-modal', 'pay-modal', 'confirm-modal', 'plan-modal'].forEach(id => {
+['del-modal','pay-modal','confirm-modal','plan-modal','budget-modal','goal-modal','goal-contribute-modal','goal-withdraw-modal','dp-modal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
 });
 
@@ -2055,6 +2437,9 @@ function checkAndNotify() {
     );
   }
 
+  // Budget alerts
+  checkBudgetAlerts();
+
   if (dueSoonPlans.length > 0 && overduePlans.length === 0) {
     const p = dueSoonPlans[0];
     const dueDate = new Date(thisMonth+'-'+String(p.dueDay||1).padStart(2,'0'));
@@ -2303,11 +2688,673 @@ function addCalcAsLiability() {
   showToast('Loan total pre-filled as liability');
 }
 
+
+
+// ── Savings Goals ──────────────────────────────────────────────────────────
+const GOAL_ICONS = ['🏖️','🚗','🏠','💻','📱','🎓','💊','✈️','👶','💍','🏋️','🎸','📷','🌍','🐶','🎯','💰','🏆','🛡️','⚡'];
+let goalEditId    = null;
+let goalModalIcon = '🎯';
+let gcGoalId      = null; // contribute
+let gwGoalId      = null; // withdraw
+
+function getGoals() { return DB.goals || []; }
+
+// ── Ring SVG ─────────────────────────────────────────────────────────────
+function goalRingSvg(pct, color, size=70) {
+  const r = size/2 - 7;
+  const circ = 2 * Math.PI * r;
+  const dash = Math.min(1, pct/100) * circ;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="goal-ring-svg">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--border)" stroke-width="6"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+      stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 ${size/2} ${size/2})"/>
+    <text x="${size/2}" y="${size/2+5}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">${pct.toFixed(0)}%</text>
+  </svg>`;
+}
+
+function goalColor(pct) {
+  if (pct >= 100) return 'var(--green)';
+  if (pct >= 60)  return 'var(--indigo2)';
+  if (pct >= 30)  return 'var(--amber)';
+  return 'var(--red)';
+}
+
+// ── Render goals screen ───────────────────────────────────────────────────
+function renderGoals() {
+  const goals = getGoals();
+
+  // Summary
+  const sw = document.getElementById('goals-summary-wrap');
+  if (sw) {
+    const totalTarget = goals.reduce((s,g)=>s+g.target,0);
+    const totalSaved  = goals.reduce((s,g)=>s+g.saved,0);
+    const completed   = goals.filter(g=>g.saved>=g.target).length;
+    if (!goals.length) {
+      sw.innerHTML = '<div class="empty-state" style="padding:24px 0"><span class="emoji">🏆</span><p>No savings goals yet.<br>Tap <b>+ New Goal</b> to start.</p></div>';
+    } else {
+      const overall = totalTarget > 0 ? totalSaved/totalTarget*100 : 0;
+      sw.innerHTML = `
+        <div class="goals-summary">
+          <div style="font-size:11px;font-weight:700;color:var(--slate);letter-spacing:.8px;text-transform:uppercase">Total Saved</div>
+          <div style="font-size:32px;font-weight:800;color:var(--green);margin:4px 0">KES ${fmt(totalSaved)}</div>
+          <div style="font-size:12px;color:var(--slate);margin-bottom:14px">of KES ${fmt(totalTarget)} across ${goals.length} goal${goals.length===1?'':'s'}</div>
+          <div class="budget-bar-track"><div class="budget-bar-fill ok" style="width:${Math.min(100,overall).toFixed(1)}%"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px">
+            <span style="color:var(--slate)">${overall.toFixed(1)}% overall progress</span>
+            <span style="color:var(--green);font-weight:700">${completed} completed 🎉</span>
+          </div>
+        </div>`;
+    }
+  }
+
+  const el = document.getElementById('goals-list');
+  if (!el) return;
+  el.innerHTML = '';
+
+  if (!goals.length) return;
+
+  // Sort: incomplete first by % descending, completed last
+  const sorted = [...goals].sort((a,b)=>{
+    const ap=a.saved>=a.target, bp=b.saved>=b.target;
+    if(ap!==bp) return ap?1:-1;
+    return (b.saved/b.target)-(a.saved/a.target);
+  });
+
+  sorted.forEach(g => {
+    const pct     = Math.min(100, g.saved/g.target*100);
+    const rem     = Math.max(0, g.target - g.saved);
+    const color   = goalColor(pct);
+    const done    = g.saved >= g.target;
+    const history = (g.history||[]).slice(-5).reverse();
+
+    // Days remaining
+    let daysChip = '';
+    if (g.deadline && !done) {
+      const days = Math.ceil((new Date(g.deadline)-new Date())/(1000*60*60*24));
+      const cls  = days < 0 ? 'red' : days < 30 ? 'amber' : 'green';
+      daysChip   = `<span class="goal-chip ${cls}">${days<0?'Overdue':days+' days left'}</span>`;
+    }
+
+    // Monthly needed
+    let monthlyChip = '';
+    if (rem > 0 && g.deadline) {
+      const months = Math.max(1, Math.ceil((new Date(g.deadline)-new Date())/(1000*60*60*24*30)));
+      monthlyChip = `<span class="goal-chip">KES ${fmt(rem/months)}/mo needed</span>`;
+    }
+
+    const d = document.createElement('div');
+    d.className = 'goal-card';
+    if (done) d.style.borderLeft = '3px solid var(--green)';
+    d.innerHTML = `
+      <div class="goal-card-top">
+        ${goalRingSvg(pct, color)}
+        <div class="goal-info">
+          <div class="goal-name">${san(g.name)} ${done?'🎉':''}</div>
+          <div class="goal-target">Target: KES ${fmt(g.target)}${g.deadline?' · '+g.deadline:''}</div>
+          <div class="goal-saved" style="color:${color}">KES ${fmt(g.saved)} <span>saved</span></div>
+        </div>
+        <button class="goal-edit-btn" onclick="openGoalEditModal('${san(g.id)}')">✏️</button>
+      </div>
+      ${rem>0?`<div style="font-size:12px;color:var(--slate)">KES ${fmt(rem)} remaining to reach goal</div>`:''}
+      <div class="goal-meta-row">
+        ${daysChip}
+        ${monthlyChip}
+        <span class="goal-chip ${done?'green':''}">${done?'Completed ✓':pct.toFixed(1)+'% done'}</span>
+      </div>
+      ${history.length?`
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--slate);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px">Recent activity</div>
+        <div class="goal-history">
+          ${history.map(h=>`
+            <div class="goal-hist-row">
+              <span style="color:${h.type==='deposit'?'var(--green)':'var(--red)'}">${h.type==='deposit'?'+'  :'−'}KES ${fmt(h.amount)}</span>
+              <span style="color:var(--slate)">${h.note?san(h.note):''}</span>
+              <span style="color:var(--slate)">${h.date}</span>
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+      <div class="goal-actions">
+        ${!done?`<button class="goal-contribute-btn" onclick="openContributeModal('${san(g.id)}')">+ Add Savings</button>`:''}
+        <button class="goal-withdraw-btn" onclick="openWithdrawModal('${san(g.id)}')">Withdraw</button>
+      </div>`;
+    el.appendChild(d);
+  });
+}
+
+// ── Dashboard preview ─────────────────────────────────────────────────────
+function renderDashGoalsPreview() {
+  const el = document.getElementById('dash-goals-preview');
+  if (!el) return;
+  const goals = getGoals();
+  if (!goals.length) { el.innerHTML=''; return; }
+  const top = [...goals].sort((a,b)=>(b.saved/b.target)-(a.saved/a.target)).slice(0,3);
+  const totalSaved  = goals.reduce((s,g)=>s+g.saved,0);
+  const completed   = goals.filter(g=>g.saved>=g.target).length;
+  el.innerHTML = `
+    <div class="dash-goals-card">
+      <h3>🏆 Savings Goals <button onclick="showScreen('goals')">View all →</button></h3>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div class="stat-mini" style="flex:1"><div class="sv" style="color:var(--green)">KES ${fmt(totalSaved)}</div><div class="sl">Total saved</div></div>
+        <div class="stat-mini" style="flex:1"><div class="sv">${goals.length}</div><div class="sl">Active goals</div></div>
+        <div class="stat-mini" style="flex:1"><div class="sv" style="color:var(--green)">${completed}</div><div class="sl">Completed</div></div>
+      </div>
+      ${top.map(g=>{
+        const pct = Math.min(100, g.saved/g.target*100);
+        const color = goalColor(pct);
+        return `<div class="dgc-row">
+          <span style="font-size:20px">${g.icon||'🎯'}</span>
+          <div class="dgc-info">
+            <div class="dgc-name">${san(g.name)}</div>
+            <div class="dgc-sub">KES ${fmt(g.saved)} / ${fmt(g.target)}</div>
+          </div>
+          <div class="dgc-pct" style="color:${color}">${pct.toFixed(0)}%</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ── Icon grid ─────────────────────────────────────────────────────────────
+function buildGoalIconGrid(selected) {
+  const grid = document.getElementById('goal-icon-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  GOAL_ICONS.forEach(ic => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `background:${ic===selected?'var(--indigo)':'var(--card2)'};border:none;border-radius:10px;width:100%;aspect-ratio:1;font-size:20px;cursor:pointer;transition:background .15s`;
+    btn.textContent = ic;
+    btn.onclick = () => {
+      goalModalIcon = ic;
+      grid.querySelectorAll('button').forEach(b=>b.style.background='var(--card2)');
+      btn.style.background = 'var(--indigo)';
+    };
+    grid.appendChild(btn);
+  });
+}
+
+// ── Modals ────────────────────────────────────────────────────────────────
+function openGoalAddModal() {
+  goalEditId = null; goalModalIcon = '🎯';
+  document.getElementById('goal-modal-title').textContent = 'New Savings Goal';
+  document.getElementById('goal-name').value    = '';
+  document.getElementById('goal-target').value  = '';
+  document.getElementById('goal-initial').value = '';
+  document.getElementById('goal-deadline').value= '';
+  document.getElementById('goal-delete-btn').style.display = 'none';
+  buildGoalIconGrid('🎯');
+  document.getElementById('goal-modal').classList.add('open');
+}
+
+function openGoalEditModal(id) {
+  const g = getGoals().find(x=>x.id===id);
+  if (!g) return;
+  goalEditId = id; goalModalIcon = g.icon||'🎯';
+  document.getElementById('goal-modal-title').textContent = 'Edit Goal';
+  document.getElementById('goal-name').value    = g.name;
+  document.getElementById('goal-target').value  = g.target;
+  document.getElementById('goal-initial').value = '';
+  document.getElementById('goal-deadline').value= g.deadline||'';
+  document.getElementById('goal-delete-btn').style.display = 'block';
+  buildGoalIconGrid(goalModalIcon);
+  document.getElementById('goal-modal').classList.add('open');
+}
+
+function saveGoal() {
+  const name     = stripHtml(document.getElementById('goal-name').value.trim()).slice(0,60);
+  const target   = parseFloat(document.getElementById('goal-target').value);
+  const initial  = parseFloat(document.getElementById('goal-initial').value)||0;
+  const deadline = document.getElementById('goal-deadline').value||'';
+  if (!name)                         { showToast('Enter a goal name'); return; }
+  if (!target||target<=0||!isFinite(target)) { showToast('Enter a valid target amount'); return; }
+  DB.goals = DB.goals || [];
+  if (goalEditId) {
+    const g = DB.goals.find(x=>x.id===goalEditId);
+    if (g) { g.name=name; g.target=target; g.deadline=deadline; g.icon=goalModalIcon; }
+  } else {
+    const today = new Date();
+    const dateStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+    const g = { id:Date.now().toString(), name, target, saved:initial, deadline, icon:goalModalIcon, history:[] };
+    if (initial > 0) g.history.push({type:'deposit', amount:initial, note:'Initial deposit', date:dateStr});
+    DB.goals.push(g);
+  }
+  scheduleSave();
+  closeModal('goal-modal');
+  renderGoals();
+  renderDashGoalsPreview();
+  showToast(goalEditId?'Goal updated ✓':'Goal created ✓');
+}
+
+function deleteGoal() {
+  const g = getGoals().find(x=>x.id===goalEditId);
+  if (!g) return;
+  showConfirmModal('Delete Goal', `Delete "${g.name}"? All progress will be lost.`, 'Delete', ()=>{
+    DB.goals = DB.goals.filter(x=>x.id!==goalEditId);
+    scheduleSave();
+    closeModal('goal-modal');
+    renderGoals();
+    renderDashGoalsPreview();
+    showToast('Goal deleted');
+  });
+}
+
+function openContributeModal(id) {
+  gcGoalId = id;
+  const g = getGoals().find(x=>x.id===id);
+  if (!g) return;
+  const rem = Math.max(0, g.target - g.saved);
+  document.getElementById('gc-modal-title').textContent = 'Add to ' + g.name;
+  document.getElementById('gc-modal-sub').textContent = `KES ${fmt(g.saved)} saved · KES ${fmt(rem)} remaining`;
+  document.getElementById('gc-amount').value = '';
+  document.getElementById('gc-note').value   = '';
+  document.getElementById('goal-contribute-modal').classList.add('open');
+}
+
+function confirmContribute() {
+  const amount = parseFloat(document.getElementById('gc-amount').value);
+  const note   = stripHtml(document.getElementById('gc-note').value.trim()).slice(0,60);
+  if (!amount||amount<=0||!isFinite(amount)) { showToast('Enter a valid amount'); return; }
+  const g = (DB.goals||[]).find(x=>x.id===gcGoalId);
+  if (!g) return;
+  const today = new Date();
+  const dateStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  g.saved = (g.saved||0) + amount;
+  g.history = g.history||[];
+  g.history.push({type:'deposit', amount, note:note||'Deposit', date:dateStr});
+  scheduleSave();
+  closeModal('goal-contribute-modal');
+  renderGoals();
+  renderDashGoalsPreview();
+  if (g.saved >= g.target) {
+    showToast('🎉 Goal reached! Congratulations!');
+    sendNotif('🎉 Goal Achieved!', `You've reached your "${g.name}" goal of KES ${fmt(g.target)}!`, 'goal-'+g.id);
+  } else {
+    showToast(`+KES ${fmt(amount)} added ✓`);
+  }
+}
+
+function openWithdrawModal(id) {
+  gwGoalId = id;
+  const g = getGoals().find(x=>x.id===id);
+  if (!g) return;
+  document.getElementById('gw-modal-sub').textContent = `Available: KES ${fmt(g.saved)}`;
+  document.getElementById('gw-amount').value = '';
+  document.getElementById('goal-withdraw-modal').classList.add('open');
+}
+
+function confirmWithdraw() {
+  const amount = parseFloat(document.getElementById('gw-amount').value);
+  if (!amount||amount<=0||!isFinite(amount)) { showToast('Enter a valid amount'); return; }
+  const g = (DB.goals||[]).find(x=>x.id===gwGoalId);
+  if (!g) return;
+  if (amount > g.saved) { showToast(`Max withdrawal: KES ${fmt(g.saved)}`); return; }
+  const today = new Date();
+  const dateStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  g.saved = Math.max(0, g.saved - amount);
+  g.history = g.history||[];
+  g.history.push({type:'withdrawal', amount, note:'Withdrawal', date:dateStr});
+  scheduleSave();
+  closeModal('goal-withdraw-modal');
+  renderGoals();
+  renderDashGoalsPreview();
+  showToast(`KES ${fmt(amount)} withdrawn`);
+}
+
+// ── Budget Limits ──────────────────────────────────────────────────────────
+let budgetMonth = (() => { const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0'); })();
+let budgetEditCat = '';
+let budgetEditEmoji = '';
+
+function changeBudgetMonth(dir) {
+  const [y,m] = budgetMonth.split('-').map(Number);
+  const d = new Date(y, m-1+dir, 1);
+  budgetMonth = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  renderBudgets();
+}
+
+function getBudgets() { return DB.budgets || {}; }
+
+function getMonthSpend(month) {
+  const map = {};
+  (DB.txs||[]).filter(t=>t.type==='expense'&&t.date?.startsWith(month)).forEach(t=>{
+    map[t.category] = (map[t.category]||0) + t.amount;
+  });
+  return map;
+}
+
+function budgetStatus(spent, limit) {
+  const pct = spent/limit*100;
+  if (pct >= 100) return 'over';
+  if (pct >= 80)  return 'warn';
+  return 'ok';
+}
+
+function renderBudgets() {
+  setText('budget-month-label', monthLabel(budgetMonth));
+  setText('budget-nav-month', budgetMonth.slice(5,7)+'/'+budgetMonth.slice(0,4));
+  const budgets  = getBudgets();
+  const spending = getMonthSpend(budgetMonth);
+  const cats     = CATS.expense;
+
+  // Summary
+  const allLimited = Object.keys(budgets);
+  let totalLimit=0, totalSpent=0, overCount=0, warnCount=0;
+  allLimited.forEach(cat => {
+    const lim   = budgets[cat];
+    const spent = spending[cat]||0;
+    totalLimit += lim; totalSpent += spent;
+    const st = budgetStatus(spent, lim);
+    if (st==='over') overCount++;
+    if (st==='warn') warnCount++;
+  });
+
+  const sw = document.getElementById('budget-summary-wrap');
+  if (sw) {
+    if (allLimited.length === 0) {
+      sw.innerHTML = '<div class="empty-state" style="padding:24px 0"><span class="emoji">🎯</span><p>No budget limits set yet.<br>Tap <b>+ Set Budget</b> to add one.</p></div>';
+    } else {
+      const overall = totalLimit>0 ? Math.min(100,(totalSpent/totalLimit*100)) : 0;
+      const st = budgetStatus(totalSpent, totalLimit||1);
+      sw.innerHTML = `
+        <div class="budget-summary-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--slate);letter-spacing:.8px;text-transform:uppercase">Monthly Budget</div>
+              <div style="font-size:28px;font-weight:800;color:${st==='over'?'var(--red)':st==='warn'?'var(--amber)':'var(--green)'}">KES ${fmt(totalSpent)}</div>
+              <div style="font-size:12px;color:var(--slate)">of KES ${fmt(totalLimit)} total limit</div>
+            </div>
+            <div style="font-size:40px">${st==='over'?'🚨':st==='warn'?'⚠️':'✅'}</div>
+          </div>
+          <div class="budget-bar-track" style="margin:14px 0 8px">
+            <div class="budget-bar-fill ${st}" style="width:${overall}%"></div>
+          </div>
+          <div class="budget-summary-grid">
+            <div class="bsg-item"><div class="bsg-val" style="color:var(--green)">${allLimited.length}</div><div class="bsg-label">Categories</div></div>
+            <div class="bsg-item"><div class="bsg-val" style="color:var(--amber)">${warnCount}</div><div class="bsg-label">Near limit</div></div>
+            <div class="bsg-item"><div class="bsg-val" style="color:var(--red)">${overCount}</div><div class="bsg-label">Over limit</div></div>
+          </div>
+        </div>`;
+    }
+  }
+
+  // List
+  const el = document.getElementById('budget-list');
+  if (!el) return;
+  el.innerHTML = '';
+
+  // Show all expense categories — those with limits first, then others
+  const withLimit    = cats.filter(c => budgets[c.l]);
+  const withoutLimit = cats.filter(c => !budgets[c.l] && (spending[c.l]||0) > 0);
+  const toShow       = [...withLimit, ...withoutLimit];
+
+  if (!toShow.length) { el.innerHTML = '<div class="empty-state"><span class="emoji">📭</span><p>No expense activity this month</p></div>'; return; }
+
+  toShow.forEach(c => {
+    const limit  = budgets[c.l] || 0;
+    const spent  = spending[c.l] || 0;
+    const pct    = limit > 0 ? Math.min(100, spent/limit*100) : 0;
+    const st     = limit > 0 ? budgetStatus(spent, limit) : 'none';
+    const rem    = limit > 0 ? limit - spent : 0;
+
+    const d = document.createElement('div');
+    d.className = 'budget-item';
+    d.innerHTML = `
+      <div class="budget-item-top">
+        <div class="budget-item-icon" style="background:${st==='over'?'var(--red-bg)':st==='warn'?'var(--amber-bg)':'var(--green-bg)'}">
+          ${c.e}
+        </div>
+        <div class="budget-item-info">
+          <div class="budget-item-name">${san(c.l)}</div>
+          <div class="budget-item-meta">
+            ${limit > 0
+              ? (st==='over' ? `Over by KES ${fmt(Math.abs(rem))}` : st==='warn' ? `KES ${fmt(rem)} remaining` : `KES ${fmt(rem)} remaining`)
+              : 'No limit set'}
+          </div>
+        </div>
+        <div class="budget-item-right">
+          <div class="budget-spent" style="color:${st==='over'?'var(--red)':st==='warn'?'var(--amber)':'var(--text)'}">
+            KES ${fmt(spent)}
+          </div>
+          ${limit > 0 ? `<div class="budget-limit">limit KES ${fmt(limit)}</div>` : ''}
+        </div>
+      </div>
+      ${limit > 0 ? `
+      <div>
+        <div class="budget-bar-track">
+          <div class="budget-bar-fill ${st}" style="width:${pct.toFixed(1)}%"></div>
+        </div>
+        <div class="budget-bar-labels" style="margin-top:5px">
+          <span>${pct.toFixed(0)}% used</span>
+          <span><span class="budget-status-badge ${st}">${st==='over'?'🚨 Over':st==='warn'?'⚠️ Warning':'✅ On track'}</span></span>
+        </div>
+      </div>` : ''}
+      <div style="display:flex;justify-content:flex-end">
+        <button class="budget-edit-btn" onclick="openBudgetEditModal('${san(c.l)}','${c.e}',${limit})">
+          ${limit > 0 ? '✏️ Edit limit' : '+ Set limit'}
+        </button>
+      </div>`;
+    el.appendChild(d);
+  });
+}
+
+// Dashboard preview
+function renderDashBudgetPreview() {
+  const el = document.getElementById('dash-budget-preview');
+  if (!el) return;
+  const budgets  = getBudgets();
+  const spending = getMonthSpend(currentMonth);
+  const keys     = Object.keys(budgets);
+  if (!keys.length) { el.innerHTML = ''; return; }
+
+  const items = keys.map(cat => {
+    const c    = CATS.expense.find(x=>x.l===cat) || {e:'💸',l:cat};
+    const lim  = budgets[cat];
+    const spt  = spending[cat]||0;
+    const pct  = Math.min(100, spt/lim*100);
+    const st   = budgetStatus(spt, lim);
+    return {cat, emoji:c.e, lim, spt, pct, st};
+  }).sort((a,b) => b.pct - a.pct).slice(0,4);
+
+  const overCount = items.filter(x=>x.st==='over').length;
+  const warnCount = items.filter(x=>x.st==='warn').length;
+
+  el.innerHTML = `
+    <div class="dash-budget-card">
+      <h3>🎯 Budget Limits
+        <button onclick="showScreen('budgets')">Manage →</button>
+      </h3>
+      ${overCount>0 ? `<div class="alert-banner danger" style="margin-bottom:10px;padding:10px 14px"><div class="alert-icon" style="font-size:18px">🚨</div><div class="alert-body"><div class="alert-title" style="font-size:13px">${overCount} categor${overCount===1?'y':'ies'} over budget</div><div class="alert-msg">Tap Manage to review</div></div></div>` : ''}
+      ${warnCount>0&&!overCount ? `<div class="alert-banner warn" style="margin-bottom:10px;padding:10px 14px"><div class="alert-icon" style="font-size:18px">⚠️</div><div class="alert-body"><div class="alert-title" style="font-size:13px">${warnCount} categor${warnCount===1?'y':'ies'} near limit</div><div class="alert-msg">Over 80% spent</div></div></div>` : ''}
+      ${items.map(({cat,emoji,lim,spt,pct,st}) => `
+        <div class="dbc-row">
+          <div class="dbc-top">
+            <div class="dbc-name">${emoji} ${san(cat)}</div>
+            <div class="dbc-pct ${st}">${pct.toFixed(0)}%</div>
+          </div>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill ${st}" style="width:${pct}%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--slate);margin-top:3px">
+            <span>KES ${fmt(spt)}</span><span>of KES ${fmt(lim)}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// Modal
+let budgetModalCat = '';
+let budgetModalEmoji = '';
+
+function openBudgetSetModal() {
+  budgetModalCat = ''; budgetModalEmoji = '';
+  document.getElementById('budget-modal-title').textContent = 'Set Budget Limit';
+  document.getElementById('budget-modal-sub').textContent   = 'Choose a spending category and monthly cap';
+  document.getElementById('budget-limit-input').value = '';
+  document.getElementById('budget-delete-btn').style.display = 'none';
+  buildBudgetCatGrid('');
+  document.getElementById('budget-modal').classList.add('open');
+}
+
+function openBudgetEditModal(cat, emoji, currentLimit) {
+  budgetModalCat = cat; budgetModalEmoji = emoji;
+  document.getElementById('budget-modal-title').textContent = 'Edit Budget Limit';
+  document.getElementById('budget-modal-sub').textContent   = emoji + ' ' + cat;
+  document.getElementById('budget-limit-input').value = currentLimit || '';
+  document.getElementById('budget-delete-btn').style.display = currentLimit > 0 ? 'block' : 'none';
+  buildBudgetCatGrid(cat);
+  document.getElementById('budget-modal').classList.add('open');
+}
+
+function buildBudgetCatGrid(selected) {
+  const grid = document.getElementById('budget-cat-grid');
+  grid.innerHTML = '';
+  CATS.expense.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cat-chip' + (c.l === selected ? ' se' : '');
+    el.innerHTML = `<span class="ce">${c.e}</span>${c.l}`;
+    el.onclick = () => {
+      budgetModalCat = c.l; budgetModalEmoji = c.e;
+      document.getElementById('budget-modal-sub').textContent = c.e + ' ' + c.l;
+      const existing = (DB.budgets||{})[c.l];
+      document.getElementById('budget-limit-input').value = existing || '';
+      document.getElementById('budget-delete-btn').style.display = existing ? 'block' : 'none';
+      document.querySelectorAll('#budget-cat-grid .cat-chip').forEach(x=>x.classList.remove('se','si','sl'));
+      el.classList.add('se');
+    };
+    grid.appendChild(el);
+  });
+}
+
+function saveBudgetLimit() {
+  if (!budgetModalCat)  { showToast('Pick a category'); return; }
+  const limit = parseFloat(document.getElementById('budget-limit-input').value);
+  if (!limit || limit <= 0 || !isFinite(limit)) { showToast('Enter a valid amount'); return; }
+  DB.budgets = DB.budgets || {};
+  DB.budgets[budgetModalCat] = limit;
+  scheduleSave();
+  closeModal('budget-modal');
+  renderBudgets();
+  renderDashBudgetPreview();
+  showToast('Budget limit saved ✓');
+  // Check if over limit immediately
+  checkBudgetAlerts();
+}
+
+function deleteBudgetLimit() {
+  if (!budgetModalCat) return;
+  showConfirmModal('Remove Limit', `Remove the budget limit for ${budgetModalEmoji} ${budgetModalCat}?`, 'Remove', () => {
+    DB.budgets = DB.budgets || {};
+    delete DB.budgets[budgetModalCat];
+    scheduleSave();
+    closeModal('budget-modal');
+    renderBudgets();
+    renderDashBudgetPreview();
+    showToast('Budget limit removed');
+  });
+}
+
+function checkBudgetAlerts() {
+  if (Notification.permission !== 'granted') return;
+  const budgets  = getBudgets();
+  const spending = getMonthSpend(currentMonth);
+  Object.entries(budgets).forEach(([cat, limit]) => {
+    const spent = spending[cat]||0;
+    const pct   = spent/limit*100;
+    if (pct >= 100) {
+      sendNotif('🚨 Budget Exceeded', `${cat}: KES ${fmt(spent)} spent vs KES ${fmt(limit)} limit`, 'budget-over-'+cat);
+    } else if (pct >= 80) {
+      sendNotif('⚠️ Budget Warning', `${cat}: ${pct.toFixed(0)}% of KES ${fmt(limit)} limit used`, 'budget-warn-'+cat);
+    }
+  });
+}
+
+
+// ── Data Protection ────────────────────────────────────────────────────────
+function showDataProtectionModal() {
+  document.getElementById('dp-modal').classList.add('open');
+}
+
+function exportDataJSON() {
+  try {
+    const exportObj = {
+      exported_at : new Date().toISOString(),
+      app         : 'Budget Tracker',
+      version     : '1.0',
+      data        : {
+        transactions : DB.txs  || [],
+        liabilities  : DB.libs || [],
+        goals        : DB.goals|| [],
+        plans        : DB.plans|| [],
+        budgets      : DB.budgets||{}
+      }
+    };
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const now  = new Date();
+    a.href     = url;
+    a.download = `budget_backup_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Backup downloaded ✓');
+  } catch(e) {
+    showToast('Export failed');
+  }
+}
+
+function changePinFlow() {
+  closeModal('dp-modal');
+  // Clear stored PIN — force re-setup on next app open
+  showConfirmModal(
+    'Change PIN',
+    'You will be signed out and asked to set a new PIN when you reconnect.',
+    'Change PIN',
+    () => {
+      localStorage.removeItem('bt_pin');
+      localStorage.removeItem('bt_salt');
+      // Lock app immediately
+      document.getElementById('app').style.display = 'none';
+      showPinScreen('setup');
+    }
+  );
+}
+
+function clearCacheOnly() {
+  showConfirmModal(
+    'Clear Local Cache',
+    'Local encrypted cache will be deleted. Your cloud data (GitHub Gist) is safe and will reload on next open.',
+    'Clear Cache',
+    () => {
+      localStorage.removeItem('bt_cache_enc');
+      localStorage.removeItem('bt_cache');
+      closeModal('dp-modal');
+      showToast('Local cache cleared');
+    }
+  );
+}
+
+function wipeAllData() {
+  showConfirmModal(
+    '⚠️ Wipe All Local Data',
+    'This removes everything from this device — token, PIN, cache. Your cloud Gist data remains safe. You will need to reconnect.',
+    'Wipe Device',
+    () => {
+      // Keep device key for consistent behaviour, wipe everything else
+      const dk = localStorage.getItem('bt_dk');
+      localStorage.clear();
+      if (dk) localStorage.setItem('bt_dk', dk);
+      closeModal('dp-modal');
+      location.reload();
+    }
+  );
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────
 (async () => {
-  TOKEN = deobfuscate(localStorage.getItem('bt_token') || '') || localStorage.getItem('bt_token') || '';
+  TOKEN = deobfuscate(localStorage.getItem('bt_token') || '') || '';
   GIST_ID = localStorage.getItem('bt_gist')  || '';
-  const cached = localStorage.getItem('bt_cache');
+  const cached = localStorage.getItem('bt_cache_enc');
 
   if (!TOKEN) {
     document.getElementById('loading').style.display = 'none';
@@ -2315,8 +3362,25 @@ function addCalcAsLiability() {
     return;
   }
 
-  // Load from cache immediately so app feels instant
-  if (cached) { try { DB = JSON.parse(cached); } catch(e) {} }
+  // Load from encrypted cache immediately so app feels instant
+  if (cached) {
+    const dec = await decryptCache(cached);
+    if (dec) { DB = validateDB(dec) || DB; }
+  } else {
+    // Try legacy plaintext cache (migrate & delete)
+    const legacy = localStorage.getItem('bt_cache');
+    if (legacy) {
+      try {
+        const parsed = JSON.parse(legacy);
+        DB = validateDB(parsed) || DB;
+        // Immediately re-save encrypted & remove plaintext
+        encryptCache(DB).then(enc => {
+          if (enc) localStorage.setItem('bt_cache_enc', enc);
+          localStorage.removeItem('bt_cache');
+        });
+      } catch(e) {}
+    }
+  }
 
   try {
     setSyncDot('syncing');
@@ -2324,7 +3388,7 @@ function addCalcAsLiability() {
     const me = await fetch('https://api.github.com/user', { headers: { Authorization: 'token ' + TOKEN } });
     if (!me.ok) throw new Error('token_invalid');
     DB = await gistGet();
-    localStorage.setItem('bt_cache', JSON.stringify(DB));
+    encryptCache(DB).then(enc => { if(enc) localStorage.setItem('bt_cache_enc', enc); });
     setSyncDot('ok');
   } catch(e) {
     if (e.message === 'token_invalid' || !cached) {
@@ -2336,6 +3400,8 @@ function addCalcAsLiability() {
     } else {
       setSyncDot('err');
       showToast('Offline — using cached data');
+      // Re-encrypt cache with current data
+      encryptCache(DB).then(enc => { if(enc) localStorage.setItem('bt_cache_enc', enc); });
     }
   }
 
